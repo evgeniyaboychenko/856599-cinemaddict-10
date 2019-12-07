@@ -5,6 +5,8 @@ import {createShowMoreButtonTemplate} from './components/show-more-button.js';
 import {createFilmCardTemplate} from './components/film-card.js';
 import {createAboutFilmPopupTemplate} from './components/about-film.js';
 
+import {generateMovieCard} from './mock/movie.js';
+
 const CARD_COUNT = 5;
 const CARD_COUNT_EXTRA = 2;
 
@@ -36,4 +38,4 @@ for (let i = 1; i < 3; i++) {
 }
 
 const siteBody = document.querySelector(`body`);
-render(siteBody, createAboutFilmPopupTemplate(), `beforeend`);
+render(siteBody, createAboutFilmPopupTemplate(generateMovieCard()), `beforeend`);
