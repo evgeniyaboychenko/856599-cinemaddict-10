@@ -22,22 +22,6 @@ export const generateRandomArray = (array, number) => {
   return array;
 };
 
-// const castTimeFormat = (value) => {
-//   return value < 10 ? `0${value}` : String(value);
-// };
-//
-// export const formatTime = (date) => {
-//   let hours = date.getHours() % 12;
-//   hours = hours === 0 ? 12 : hours;
-//   const minutes = castTimeFormat(date.getMinutes());
-//   const interval = date.getHours() > 11 ? `pm` : `am`;
-//   return `${castTimeFormat(hours)}:${minutes} ${interval}`;
-// };
-//
-// export const formatNumber = (number) => {
-//   return number;
-// };
-
 export const getObjectsArray = (obj, count) => {
   return new Array(count)
     .fill(``).map(obj);

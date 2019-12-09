@@ -8,7 +8,6 @@ const generateDateRelease = (date) => {
   return `${year}`;
 };
 
-
 export const createFilmCardTemplate = (film) => {
   const {posters, title, description, rating, releaseDate, runtime, genres, commentsCount} = film;
   const shortDescription = cropText(description);
