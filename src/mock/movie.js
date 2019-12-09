@@ -1,7 +1,9 @@
 import {getRandomNumber} from '../utils.js';
 import {getRandomRange} from '../utils.js';
 import {generateRandomArray} from '../utils.js';
-import {MONTHS} from '../const.js';
+import {generateFlagValue} from '../utils.js';
+
+import {getObjectsArray} from '../utils.js';
 
 const MOVIE_TITLES = [`Frozen II`, `The Shawshank Redemption`, `Forrest Gump`, `The Matrix`, `The Matrix`, `The Lord of the Rings: The Fellowship of the Ring`, `Pulp Fiction`, `The Silence of the Lambs`, `Saving Private Ryan`, `Gladiator`, `Se7en`];
 const COUNTRIES = [`Russia`, `USA`, `Spain`, `UC`, `Japan`, `Finland`, `Israel`, `Poland`, `Thailand`, `Turkey`];
@@ -43,13 +45,10 @@ const generateRunTime = () => {
   return `${hours} ${minute}min`;
 };
 
-const generateDateRelease = () => {
+const getDateRelease = () => {
   let date = new Date();
   date.setFullYear(getRandomRange(1920, date.getFullYear()), getRandomNumber(12), getRandomNumber(31));
-  const year = date.getFullYear();
-  const month = MONTHS[date.getMonth()];
-  const number = date.getDate();
-  return `${number} ${month} ${year}`;
+  return date;
 };
 
 const generateRating = () => {
@@ -61,15 +60,24 @@ export const generateMovieCard = () => {
     posters: SRC_IMAGES[getRandomNumber(SRC_IMAGES.length)],
     title: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],
     originalTitle: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],
-    description: getText(generateRandomArray(getDescriptions(DESCRIPTION_TEXT), 3), ` `),
+    description: getText(generateRandomArray(getDescriptions(DESCRIPTION_TEXT), getRandomRange(1, 4)), ` `),
     rating: generateRating(),
+    userRating: getRandomRange(1, 10),
     director: PEOPLE_NAMES[getRandomNumber(PEOPLE_NAMES.length)],
     writers: deleteLastItem((getText(generateRandomArray(PEOPLE_NAMES, 3), `, `))),
     actors: deleteLastItem((getText(generateRandomArray(PEOPLE_NAMES, 3), `, `))),
-    releaseDate: generateDateRelease(),
+    releaseDate: getDateRelease(),
     runtime: generateRunTime(),
     country: COUNTRIES[getRandomNumber(COUNTRIES.length)],
-    genres: generateRandomArray(GENRES, 3),
+    genres: generateRandomArray(GENRES, getRandomRange(1, 4)),
     ageLimit: AGE_LIMITS[getRandomNumber(AGE_LIMITS.length)],
+    commentsCount: getRandomNumber(10),
+    isWatchlist: generateFlagValue(),
+    isHistory: generateFlagValue(),
+    isFavorites: generateFlagValue(),
   };
+};
+
+export const generateMovieCards = (count) => {
+  return getObjectsArray(generateMovieCard, count);
 };

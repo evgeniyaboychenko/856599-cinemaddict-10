@@ -12,3 +12,6 @@ export const MONTHS = [
   `November`,
   `December`
 ];
+
+export const CARD_COUNT = 5;
+export const MOVIE_COUNT = 19;
