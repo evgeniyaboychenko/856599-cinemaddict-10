@@ -1,5 +1,7 @@
+import {createElement} from '../utils.js';
+
 // функция возвращающая Список карточек с фильмами
-export const createListFilmCardsTemplate = () => {
+const createListFilmCardsTemplate = () => {
   return (
     `<section class="films">
       <section class="films-list">
@@ -17,3 +19,25 @@ export const createListFilmCardsTemplate = () => {
     </section>`
   );
 };
+
+export default class ListFilmCardsComponent {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createListFilmCardsTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

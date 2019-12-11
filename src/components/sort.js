@@ -1,4 +1,6 @@
-export const createSortFilmTemplate = () => {
+import {createElement} from '../utils.js';
+
+const createSortFilmTemplate = () => {
   return (
     `<ul class="sort">
        <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
@@ -7,3 +9,25 @@ export const createSortFilmTemplate = () => {
     </ul>`
   );
 };
+
+export default class SortFilmComponent {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSortFilmTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

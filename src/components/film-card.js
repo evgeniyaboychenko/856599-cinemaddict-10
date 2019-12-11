@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 // функция возвращающая Карточку фильма
 const cropText = (text) => {
   return text.length > 140 ? `${text.substr(0, 139)}...` : text;
@@ -8,7 +10,7 @@ const generateDateRelease = (date) => {
   return `${year}`;
 };
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {posters, title, description, rating, releaseDate, runtime, genres, commentsCount} = film;
   const shortDescription = cropText(description);
   const releaseDateYear = generateDateRelease(releaseDate);
@@ -32,3 +34,26 @@ export const createFilmCardTemplate = (film) => {
     </article>`
   );
 };
+
+export default class FilmCardComponent {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
