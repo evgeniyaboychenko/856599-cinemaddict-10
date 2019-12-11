@@ -4,6 +4,7 @@ import {createListFilmCardsTemplate} from './components/list-film-cards.js';
 import {createShowMoreButtonTemplate} from './components/show-more-button.js';
 import {createFilmCardTemplate} from './components/film-card.js';
 import {createAboutFilmPopupTemplate} from './components/about-film.js';
+import {createSortFilmTemplate} from './components/sort.js';
 
 import {generateMovieCard} from './mock/movie.js';
 
@@ -15,6 +16,8 @@ import {generateMovieFilters} from './mock/filters.js';
 import {CARD_COUNT, MOVIE_COUNT} from './const.js';
 
 import {generateRandomArray} from "./utils";
+
+// import {render, RenderPosition} from './utils.js';
 
 const movieCards = generateMovieCards(MOVIE_COUNT);
 const movieFilters = generateMovieFilters(movieCards);
@@ -29,6 +32,7 @@ render(siteHeaderElement, createProfileUserTemplate(movieFilters[1].count), `bef
 const siteMainElement = document.querySelector(`.main`);
 
 render(siteMainElement, createMainNavigationTemplate(movieFilters), `beforeend`);
+render(siteMainElement, createSortFilmTemplate(), `beforeend`);
 render(siteMainElement, createListFilmCardsTemplate(), `beforeend`);
 
 const siteFilmsElement = siteMainElement.querySelector(`.films`);
