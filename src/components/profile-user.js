@@ -1,7 +1,6 @@
 import {createElement} from '../utils.js';
 
 const getProfileRating = (countWatchedFilms) => {
-  console.log(countWatchedFilms);
   if (countWatchedFilms < 1) {
     return ``;
   } else if (countWatchedFilms < 11) {
@@ -42,7 +41,7 @@ export default class ProfileUserComponent {
     return this._element;
   }
 
-    removeElement() {
+  removeElement() {
     this._element = null;
   }
 }

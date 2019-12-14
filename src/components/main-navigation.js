@@ -38,4 +38,4 @@ export default class MainNavigationComponent {
   removeElement() {
     this._element = null;
   }
-};
+}

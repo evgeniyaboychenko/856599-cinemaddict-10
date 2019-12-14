@@ -1,8 +1,9 @@
 import {createElement} from '../utils.js';
+const COMMENTS_LENGTH = 140;
 
 // функция возвращающая Карточку фильма
 const cropText = (text) => {
-  return text.length > 140 ? `${text.substr(0, 139)}...` : text;
+  return text.length > COMMENTS_LENGTH ? `${text.substr(0, COMMENTS_LENGTH - 1)}...` : text;
 };
 
 const generateDateRelease = (date) => {
