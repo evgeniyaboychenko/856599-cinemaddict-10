@@ -30,7 +30,7 @@ const siteBody = document.querySelector(`body`);
 render(siteMainElement, new MainNavigationComponent(movieFilters).getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new SortFilmComponent().getElement(), RenderPosition.BEFOREEND);
 
-if (MOVIE_COUNT) {
+const drawMovieCards = () => {
   const listFilmCardsComponent = new ListFilmCardsComponent();
   render(siteMainElement, listFilmCardsComponent.getElement(), RenderPosition.BEFOREEND);
 
@@ -63,7 +63,7 @@ if (MOVIE_COUNT) {
       };
 
       const onFilmCardElementClick = () => {
-        deleteListenerPopupButtonCloseClick();
+        removeOpenPopupListeners();
         // проверяем есть ли открытые попапы
         if (currentFilmPopup) {
           currentFilmPopup.getElement().remove();
@@ -85,7 +85,7 @@ if (MOVIE_COUNT) {
 
       addListenerCardClick();
 
-      const deleteListenerPopupButtonCloseClick = () => {
+      const removeOpenPopupListeners = () => {
         filmCardPoster.removeEventListener(`click`, onFilmCardElementClick);
         filmCardTitle.removeEventListener(`click`, onFilmCardElementClick);
         filmCardComments.removeEventListener(`click`, onFilmCardElementClick);
@@ -162,10 +162,18 @@ if (MOVIE_COUNT) {
   };
 
   showMoreButtonComponent.getElement().addEventListener(`click`, onLoadCardsButtonClick);
-} else {
+};
+
+const drawMessage = () => {
   // показать сообщение, что фильмов нет
   const noDataFilmComponent = new NoDataFilmComponent();
   render(siteMainElement, noDataFilmComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+if (MOVIE_COUNT) {
+  drawMovieCards();
+} else {
+  drawMessage();
 }
 
 // показать кол-во фильмов в футере
