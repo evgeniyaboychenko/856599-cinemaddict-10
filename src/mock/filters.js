@@ -10,11 +10,21 @@ const getCountFilter = (array, field) => {
 };
 
 export const generateMovieFilters = (films) => {
-  return FILTER_NAMES.map((it, index) => {
-    return {
-      name: it,
-      count: index === 0 ? films.length : getCountFilter(films, `is${it}`),
-    };
-  });
+  if (films) {
+    return FILTER_NAMES.map((it, index) => {
+      return {
+        name: it,
+        count: index === 0 ? films.length : getCountFilter(films, `is${it}`),
+      };
+    });
+  } else {
+    return FILTER_NAMES.map((it) => {
+      return {
+        name: it,
+        count: 0,
+      };
+    });
+
+  }
 };
 
