@@ -1,4 +1,5 @@
 import {MONTHS} from '../const.js';
+import {createElement} from '../utils.js';
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -38,13 +39,12 @@ const generateDateRelease = (date) => {
 };
 
 // функция возвращающая Popup о фильме
-export const createAboutFilmPopupTemplate = (film, comments) => {
+const createAboutFilmPopupTemplate = (film, comments) => {
   const {posters, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, commentsCount, isWatchlist, isHistory, isFavorites} = film;
   const genresMarkup = createGenresMarkup(genres);
   const releaseDateFull = generateDateRelease(releaseDate);
 
   const commentsMarkup = createCommentsMarkup(comments);
-
   return (
     `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -165,3 +165,28 @@ export const createAboutFilmPopupTemplate = (film, comments) => {
     </section>`
   );
 };
+
+
+export default class AboutFilmPopupComponent {
+  constructor(film, comments) {
+    this._film = film;
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createAboutFilmPopupTemplate(this._film, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

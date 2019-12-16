@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const getProfileRating = (countWatchedFilms) => {
   if (countWatchedFilms < 1) {
     return ``;
@@ -11,7 +13,7 @@ const getProfileRating = (countWatchedFilms) => {
 };
 
 // функция возвращающая Звание пользователя
-export const createProfileUserTemplate = (countWatchedFilms) => {
+const createProfileUserTemplate = (countWatchedFilms) => {
   const profileRating = getProfileRating(countWatchedFilms);
   return (
     `<section class="header__profile profile">
@@ -20,3 +22,26 @@ export const createProfileUserTemplate = (countWatchedFilms) => {
     </section>`
   );
 };
+
+export default class ProfileUserComponent {
+  constructor(countWatchedFilms) {
+    this._countWatchedFilms = countWatchedFilms;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createProfileUserTemplate(this._countWatchedFilms);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
