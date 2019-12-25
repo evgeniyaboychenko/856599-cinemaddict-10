@@ -91,9 +91,13 @@ const drawMovieCards = () => {
       addListenerCardClick();
 
       const removeOpenPopupListeners = () => {
-        filmCardPoster.removeEventListener(`click`, onFilmCardElementClick);
-        filmCardTitle.removeEventListener(`click`, onFilmCardElementClick);
-        filmCardComments.removeEventListener(`click`, onFilmCardElementClick);
+        filmCardComponent.removePosterClickHandler(onFilmCardElementClick);
+        filmCardComponent.removeTitleClickHandler(onFilmCardElementClick);
+        filmCardComponent.removeCommentsClickHandler(onFilmCardElementClick);
+
+        // filmCardPoster.removeEventListener(`click`, onFilmCardElementClick);
+        // filmCardTitle.removeEventListener(`click`, onFilmCardElementClick);
+        // filmCardComments.removeEventListener(`click`, onFilmCardElementClick);
       };
 
       const onPopupEscPress = (evt) => {

@@ -79,4 +79,16 @@ export default class FilmCard extends AbstractComponent {
   setCommentsClickHandler(handler) {
     this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, handler);
   }
+
+  removePosterClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__poster`).removeEventListener(`click`, handler);
+  }
+  removeTitleClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__title`).removeEventListener(`click`, handler);
+  }
+  removeCommentsClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__comments`).removeEventListener(`click`, handler);
+  }
+
+
 }
