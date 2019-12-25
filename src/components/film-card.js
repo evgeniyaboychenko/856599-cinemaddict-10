@@ -1,4 +1,5 @@
-import {createElement} from '../utils.js';
+// import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 const COMMENTS_LENGTH = 140;
 
 // функция возвращающая Карточку фильма
@@ -36,25 +37,36 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCardComponent {
+// export default class FilmCardComponent {
+//   constructor(film) {
+//     this._film = film;
+//     this._element = null;
+//   }
+
+//   getTemplate() {
+//     return createFilmCardTemplate(this._film);
+//   }
+
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createElement(this.getTemplate());
+//     }
+
+//     return this._element;
+//   }
+
+//   removeElement() {
+//     this._element = null;
+//   }
+// }
+
+export default class FilmCard extends AbstractComponent {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,5 @@
-import {createElement} from '../utils.js';
+// import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 
 // функция возвращающая Список карточек с фильмами
 const createListFilmCardsTemplate = () => {
@@ -20,24 +21,30 @@ const createListFilmCardsTemplate = () => {
   );
 };
 
-export default class ListFilmCardsComponent {
-  constructor() {
-    this._element = null;
-  }
+// export default class ListFilmCardsComponent {
+//   constructor() {
+//     this._element = null;
+//   }
 
+//   getTemplate() {
+//     return createListFilmCardsTemplate();
+//   }
+
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createElement(this.getTemplate());
+//     }
+
+//     return this._element;
+//   }
+
+//   removeElement() {
+//     this._element = null;
+//   }
+// }
+
+export default class ListFilmCards extends AbstractComponent {
   getTemplate() {
     return createListFilmCardsTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

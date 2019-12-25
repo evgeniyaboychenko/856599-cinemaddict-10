@@ -1,6 +1,7 @@
-import {createElement} from '../utils.js';
+// import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 
-// функция возвращающая кнопку Show More
+// функция возвращающая сообщение, что нет фильмов
 const createNoDataFilmTemplate = () => {
   return (
     `<section class="films">
@@ -11,24 +12,30 @@ const createNoDataFilmTemplate = () => {
   );
 };
 
-export default class NoDataFilmComponent {
-  constructor() {
-    this._element = null;
-  }
+// export default class NoDataFilmComponent {
+//   constructor() {
+//     this._element = null;
+//   }
 
+//   getTemplate() {
+//     return createNoDataFilmTemplate();
+//   }
+
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createElement(this.getTemplate());
+//     }
+
+//     return this._element;
+//   }
+
+//   removeElement() {
+//     this._element = null;
+//   }
+// }
+
+export default class NoDataFilm extends AbstractComponent {
   getTemplate() {
     return createNoDataFilmTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

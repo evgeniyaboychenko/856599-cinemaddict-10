@@ -1,4 +1,5 @@
-import {createElement} from '../utils.js';
+// import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 
 const createFilterMarkup = (filter) => {
   const {name, count} = filter;
@@ -17,25 +18,38 @@ ${filterMarkup}
   );
 };
 
-export default class MainNavigationComponent {
+// export default class MainNavigationComponent {
+//   constructor(filters) {
+//     this._filters = filters;
+//     this._element = null;
+//   }
+
+//   getTemplate() {
+//     return createMainNavigationTemplate(this._filters);
+//   }
+
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createElement(this.getTemplate());
+//     }
+
+//     return this._element;
+//   }
+
+//   removeElement() {
+//     this._element = null;
+//   }
+// }
+
+
+export default class MainNavigation extends AbstractComponent {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
+    //  this._element = null;
   }
 
   getTemplate() {
     return createMainNavigationTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
