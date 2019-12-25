@@ -1,4 +1,3 @@
-// import {createElement} from '../utils.js';
 import AbstractComponent from './abstract-component.js';
 const COMMENTS_LENGTH = 140;
 
@@ -37,29 +36,6 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-// export default class FilmCardComponent {
-//   constructor(film) {
-//     this._film = film;
-//     this._element = null;
-//   }
-
-//   getTemplate() {
-//     return createFilmCardTemplate(this._film);
-//   }
-
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createElement(this.getTemplate());
-//     }
-
-//     return this._element;
-//   }
-
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
-
 export default class FilmCard extends AbstractComponent {
   constructor(film) {
     super();
@@ -89,6 +65,4 @@ export default class FilmCard extends AbstractComponent {
   removeCommentsClickHandler(handler) {
     this.getElement().querySelector(`.film-card__comments`).removeEventListener(`click`, handler);
   }
-
-
 }

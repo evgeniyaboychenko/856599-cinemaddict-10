@@ -22,7 +22,6 @@ export const render = (container, element, place) => {
 };
 
 // функция remove
-
 export const removeComponent = (component) => {
   component.getElement().remove();
   component.removeElement();
