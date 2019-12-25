@@ -1,5 +1,5 @@
 import {MONTHS} from '../const.js';
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -166,27 +166,18 @@ const createAboutFilmPopupTemplate = (film, comments) => {
   );
 };
 
-
-export default class AboutFilmPopupComponent {
+export default class AboutFilmPopup extends AbstractComponent {
   constructor(film, comments) {
+    super();
     this._film = film;
     this._comments = comments;
-    this._element = null;
   }
 
   getTemplate() {
     return createAboutFilmPopupTemplate(this._film, this._comments);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
 }

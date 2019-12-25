@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 const COMMENTS_LENGTH = 140;
 
 // функция возвращающая Карточку фильма
@@ -36,25 +36,33 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCardComponent {
+export default class FilmCard extends AbstractComponent {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  setPosterClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
+  }
+  setTitleClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, handler);
+  }
+  setCommentsClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, handler);
   }
 
-  removeElement() {
-    this._element = null;
+  removePosterClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__poster`).removeEventListener(`click`, handler);
+  }
+  removeTitleClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__title`).removeEventListener(`click`, handler);
+  }
+  removeCommentsClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__comments`).removeEventListener(`click`, handler);
   }
 }
