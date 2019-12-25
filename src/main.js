@@ -22,20 +22,20 @@ const movieCards = generateMovieCards(MOVIE_COUNT);
 const movieFilters = generateMovieFilters(movieCards);
 
 const siteHeaderElement = document.querySelector(`.header`);
-render(siteHeaderElement, new ProfileUserComponent(movieFilters[1].count).getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new ProfileUserComponent(movieFilters[1].count), RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteBody = document.querySelector(`body`);
 
-render(siteMainElement, new MainNavigationComponent(movieFilters).getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new SortFilmComponent().getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new MainNavigationComponent(movieFilters), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortFilmComponent(), RenderPosition.BEFOREEND);
 
 const drawMovieCards = () => {
   const listFilmCardsComponent = new ListFilmCardsComponent();
-  render(siteMainElement, listFilmCardsComponent.getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, listFilmCardsComponent, RenderPosition.BEFOREEND);
 
   const showMoreButtonComponent = new ShowMoreButtonComponent();
-  render(listFilmCardsComponent.getElement(), showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+  render(listFilmCardsComponent.getElement(), showMoreButtonComponent, RenderPosition.BEFOREEND);
 
   const siteFilmsListContainerElements = listFilmCardsComponent.getElement().querySelectorAll(`.films-list__container`);
   const siteFilmListContainerExtraElements = listFilmCardsComponent.getElement().querySelectorAll(`.films-list--extra`);
@@ -51,7 +51,7 @@ const drawMovieCards = () => {
       const aboutFilmPopupComponent = new AboutFilmPopupComponent(card, generateMovieComments(card.commentsCount));
       const filmCardComponent = new FilmCardComponent(card);
 
-      render(container, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
+      render(container, filmCardComponent, RenderPosition.BEFOREEND);
 
       const filmCardPoster = filmCardComponent.getElement().querySelector(`.film-card__poster`);
       const filmCardTitle = filmCardComponent.getElement().querySelector(`.film-card__title`);
@@ -71,17 +71,21 @@ const drawMovieCards = () => {
           // currentFilmPopup.removeElement();
         }
         // показать попап
-        render(siteBody, aboutFilmPopupComponent.getElement(), RenderPosition.BEFOREEND);
+        render(siteBody, aboutFilmPopupComponent, RenderPosition.BEFOREEND);
         currentFilmPopup = aboutFilmPopupComponent;
         const closePopupButton = aboutFilmPopupComponent.getElement().querySelector(`.film-details__close-btn`);
         document.addEventListener(`keydown`, onPopupEscPress);
-        closePopupButton.addEventListener(`click`, onCloseButtonClick);
+        // closePopupButton.addEventListener(`click`, onCloseButtonClick);
+        aboutFilmPopupComponent.setCloseButtonClickHandler(onCloseButtonClick);
       };
 
       const addListenerCardClick = () => {
-        filmCardPoster.addEventListener(`click`, onFilmCardElementClick);
-        filmCardTitle.addEventListener(`click`, onFilmCardElementClick);
-        filmCardComments.addEventListener(`click`, onFilmCardElementClick);
+        filmCardComponent.setPosterClickHandler(onFilmCardElementClick);
+        filmCardComponent.setTitleClickHandler(onFilmCardElementClick);
+        filmCardComponent.setCommentsClickHandler(onFilmCardElementClick);
+        // filmCardPoster.addEventListener(`click`, onFilmCardElementClick);
+        // filmCardTitle.addEventListener(`click`, onFilmCardElementClick);
+        // filmCardComments.addEventListener(`click`, onFilmCardElementClick);
       };
 
       addListenerCardClick();
@@ -164,13 +168,14 @@ const drawMovieCards = () => {
     onAutoLoad();
   };
 
-  showMoreButtonComponent.getElement().addEventListener(`click`, onLoadCardsButtonClick);
+  // showMoreButtonComponent.getElement().addEventListener(`click`, onLoadCardsButtonClick);
+  showMoreButtonComponent.setClickHandler(onLoadCardsButtonClick);
 };
 
 const drawMessage = () => {
   // показать сообщение, что фильмов нет
   const noDataFilmComponent = new NoDataFilmComponent();
-  render(siteMainElement, noDataFilmComponent.getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, noDataFilmComponent, RenderPosition.BEFOREEND);
 };
 
 if (MOVIE_COUNT) {
