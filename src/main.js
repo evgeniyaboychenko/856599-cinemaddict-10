@@ -14,9 +14,9 @@ import {generateMovieFilters} from './mock/filters.js';
 
 import {CARD_COUNT, MOVIE_COUNT, CARD_COUNT_TOP} from './const.js';
 
-import {generateRandomArray} from './utils.js';
+import {generateRandomArray} from './utils/utils.js';
 
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition, removeComponent} from './utils/render.js';
 
 const movieCards = generateMovieCards(MOVIE_COUNT);
 const movieFilters = generateMovieFilters(movieCards);
@@ -57,17 +57,18 @@ const drawMovieCards = () => {
       const filmCardTitle = filmCardComponent.getElement().querySelector(`.film-card__title`);
       const filmCardComments = filmCardComponent.getElement().querySelector(`.film-card__comments`);
 
-      const removePopup = () => {
-        aboutFilmPopupComponent.getElement().remove();
-        aboutFilmPopupComponent.removeElement();
-      };
+      // const removePopup = () => {
+      //   aboutFilmPopupComponent.getElement().remove();
+      //   aboutFilmPopupComponent.removeElement();
+      // };
 
       const onFilmCardElementClick = () => {
         removeOpenPopupListeners();
         // проверяем есть ли открытые попапы
         if (currentFilmPopup) {
-          currentFilmPopup.getElement().remove();
-          currentFilmPopup.removeElement();
+          removeComponent(currentFilmPopup);
+          // currentFilmPopup.getElement().remove();
+          // currentFilmPopup.removeElement();
         }
         // показать попап
         render(siteBody, aboutFilmPopupComponent.getElement(), RenderPosition.BEFOREEND);
@@ -99,7 +100,8 @@ const drawMovieCards = () => {
 
       const onCloseButtonClick = () => {
         document.removeEventListener(`keydown`, onPopupEscPress);
-        removePopup();
+        removeComponent(aboutFilmPopupComponent);
+        // removePopup();
         addListenerCardClick();
       };
     });
@@ -146,8 +148,9 @@ const drawMovieCards = () => {
 
   const onAutoLoad = () => {
     if (moviesLeft <= 0) {
-      showMoreButtonComponent.getElement().remove();
-      showMoreButtonComponent.removeElement();
+      removeComponent(showMoreButtonComponent);
+      // showMoreButtonComponent.getElement().remove();
+      // showMoreButtonComponent.removeElement();
     }
   };
 

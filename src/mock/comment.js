@@ -1,5 +1,5 @@
-import {getRandomNumber} from '../utils.js';
-import {getObjectsArray} from '../utils.js';
+import {getRandomNumber} from '../utils/utils.js';
+import {getObjectsArray} from '../utils/utils.js';
 
 const PEOPLE_NAMES = [`Rachel Matthews`, `Alan Tudyk`, `Hadley Gannaway`, `Kristen Bell`, `Frank Darabont`, `Stephen King`, `Tim Robbins`, `Morgan Freeman`, `Bob Gunton`, `Tom Hanks`, `Robin Wright`, `Gary Sinise`];
 const SRC_EMOJI = [`angry.png`, `puke.png`, `sleeping.png`, `smile.png`, `trophy.png`];

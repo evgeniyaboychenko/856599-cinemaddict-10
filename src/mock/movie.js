@@ -1,9 +1,9 @@
-import {getRandomNumber} from '../utils.js';
-import {getRandomRange} from '../utils.js';
-import {generateRandomArray} from '../utils.js';
-import {generateFlagValue} from '../utils.js';
+import {getRandomNumber} from '../utils/utils.js';
+import {getRandomRange} from '../utils/utils.js';
+import {generateRandomArray} from '../utils/utils.js';
+import {generateFlagValue} from '../utils/utils.js';
 
-import {getObjectsArray} from '../utils.js';
+import {getObjectsArray} from '../utils/utils.js';
 
 const MOVIE_TITLES = [`Frozen II`, `The Shawshank Redemption`, `Forrest Gump`, `The Matrix`, `The Matrix`, `The Lord of the Rings: The Fellowship of the Ring`, `Pulp Fiction`, `The Silence of the Lambs`, `Saving Private Ryan`, `Gladiator`, `Se7en`];
 const COUNTRIES = [`Russia`, `USA`, `Spain`, `UC`, `Japan`, `Finland`, `Israel`, `Poland`, `Thailand`, `Turkey`];
