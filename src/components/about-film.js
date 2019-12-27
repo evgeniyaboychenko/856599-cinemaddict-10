@@ -40,10 +40,7 @@ const generateDateRelease = (date) => {
 };
 
 const determineEndingWordGenre = (number) => {
-  if (number > 1) {
-    return EndingWordGenre.MULTIPLE;
-  }
-  return EndingWordGenre.ZERO;
+  return number > 1 ? EndingWordGenre.MULTIPLE : EndingWordGenre.ZERO;
 };
 
 // функция возвращающая Popup о фильме
