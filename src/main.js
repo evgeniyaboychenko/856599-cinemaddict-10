@@ -1,6 +1,6 @@
 import ProfileUserComponent from './components/profile-user.js';
 import MainNavigationComponent from './components/main-navigation.js';
-import SortFilmComponent from './components/sort.js';
+// import SortFilmComponent from './components/sort.js';
 
 import {generateMovieCards} from './mock/movie.js';
 
@@ -20,7 +20,7 @@ render(siteHeaderElement, new ProfileUserComponent(movieFilters[1].count), Rende
 const siteMainElement = document.querySelector(`.main`);
 
 render(siteMainElement, new MainNavigationComponent(movieFilters), RenderPosition.BEFOREEND);
-render(siteMainElement, new SortFilmComponent(), RenderPosition.BEFOREEND);
+// render(siteMainElement, new SortFilmComponent(), RenderPosition.BEFOREEND);
 
 const pageController = new PageController(siteMainElement);
 pageController.render(movieCards);
