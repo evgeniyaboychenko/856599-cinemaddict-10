@@ -1,5 +1,6 @@
 import {MONTHS} from '../const.js';
 import AbstractComponent from './abstract-component.js';
+const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -38,12 +39,15 @@ const generateDateRelease = (date) => {
   return `${number} ${month} ${year}`;
 };
 
+const determineEndingWordGenre = (number) => {
+  return number > 1 ? EndingWordGenre.MULTIPLE : EndingWordGenre.ZERO;
+};
+
 // функция возвращающая Popup о фильме
 const createAboutFilmPopupTemplate = (film, comments) => {
   const {posters, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, commentsCount, isWatchlist, isHistory, isFavorites} = film;
   const genresMarkup = createGenresMarkup(genres);
   const releaseDateFull = generateDateRelease(releaseDate);
-
   const commentsMarkup = createCommentsMarkup(comments);
   return (
     `<section class="film-details">
@@ -97,7 +101,7 @@ const createAboutFilmPopupTemplate = (film, comments) => {
                   <td class="film-details__cell">${country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">Genre${determineEndingWordGenre(genres.length)}</td>
                   <td class="film-details__cell">
                     ${genresMarkup}
                   </td>
