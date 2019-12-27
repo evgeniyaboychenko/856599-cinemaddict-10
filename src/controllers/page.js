@@ -103,12 +103,10 @@ export default class PageController {
       render(this._container, this._sortFilmComponent, RenderPosition.BEFOREEND);
       render(this._container, this._listFilmCardsComponent, RenderPosition.BEFOREEND);
       const siteFilmsList = this._listFilmCardsComponent.getElement().querySelector(`.films-list`);
-      // render(siteFilmsList, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
       const siteFilmsListContainerElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list__container`);
-
       renderCard(getCardShowing(movies, 0, CARD_COUNT), siteFilmsListContainerElements[0]);
-
       const siteFilmListContainerExtraElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list--extra`);
+
       if (isTopMovieShowing(movies, `rating`)) {
         renderCard(getTopMovie(movies, `rating`), siteFilmsListContainerElements[1]);
       } else {
