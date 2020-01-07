@@ -37,13 +37,6 @@ const getCardShowing = (cards, start, count) => {
   return cards.slice(start, start + count);
 };
 
-const renderCard = (cards, container, onDataChange) => {
-  cards.forEach((card) => {
-
-    const movieController = new MovieController(container, onDataChange);
-    movieController.render(card);
-  });
-};
 
 export default class PageController {
   constructor(container) {
@@ -54,7 +47,17 @@ export default class PageController {
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._noDataFilmComponent = new NoDataFilmComponent();
 
+    this._onViewChange = this._onViewChange.bind(this);
+
     this._onDataChange = this._onDataChange.bind(this);
+    this._movieControllers = [];
+
+  }
+
+  _onViewChange() {
+    this._movieControllers.forEach((item) => {
+      item.setDefaultView();
+    });
   }
 
   _onDataChange(movieController, oldData, newData) {
@@ -68,25 +71,38 @@ export default class PageController {
     copyMovies.splice(index, 1, newData);
     this._movies = copyMovies;
     movieController.render(this._movies[index]);
+
   }
 
   render(movies) {
+
+    const renderCard = (cards, container, onDataChange, onViewChange) => {
+      cards.forEach((card) => {
+
+        const movieController = new MovieController(container, onDataChange, onViewChange);
+        movieController.render(card);
+        this._movieControllers.push(movieController);
+
+      });
+    };
     this._movies = movies;
+
     const drawMovieCards = () => {
+
       render(this._container, this._sortFilmComponent, RenderPosition.BEFOREEND);
       render(this._container, this._listFilmCardsComponent, RenderPosition.BEFOREEND);
       const siteFilmsList = this._listFilmCardsComponent.getElement().querySelector(`.films-list`);
       const siteFilmsListContainerElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list__container`);
-      renderCard(getCardShowing(this._movies, 0, CARD_COUNT), siteFilmsListContainerElements[0], this._onDataChange);
+      renderCard(getCardShowing(this._movies, 0, CARD_COUNT), siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange);
       const siteFilmListContainerExtraElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list--extra`);
 
       if (isTopMovieShowing(this._movies, `rating`)) {
-        renderCard(getTopMovie(this._movies, `rating`), siteFilmsListContainerElements[1]);
+        renderCard(getTopMovie(this._movies, `rating`), siteFilmsListContainerElements[1], this._onDataChange, this._onViewChange);
       } else {
         siteFilmListContainerExtraElements[0].classList.add(`visually-hidden`);
       }
       if (isTopMovieShowing(this._movies, `commentsCount`)) {
-        renderCard(getTopMovie(this._movies, `commentsCount`), siteFilmsListContainerElements[2]);
+        renderCard(getTopMovie(this._movies, `commentsCount`), siteFilmsListContainerElements[2], this._onDataChange, this._onViewChange);
       } else {
         siteFilmListContainerExtraElements[1].classList.add(`visually-hidden`);
       }
@@ -108,7 +124,7 @@ export default class PageController {
         const onLoadCardsButtonClick = () => {
           let counter = Math.min(CARD_COUNT, moviesLeft);
           start = start + CARD_COUNT;
-          renderCard(getCardShowing(movieCards, start, counter), siteFilmsListContainerElements[0]);
+          renderCard(getCardShowing(movieCards, start, counter), siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange);
           moviesLeft = moviesLeft - CARD_COUNT;
           onAutoLoad();
         };
@@ -138,7 +154,7 @@ export default class PageController {
 
         siteFilmsListContainerElements[0].innerHTML = ``;
         removeComponent(this._showMoreButtonComponent);
-        renderCard(getCardShowing(sortMovies, 0, CARD_COUNT), siteFilmsListContainerElements[0]);
+        renderCard(getCardShowing(sortMovies, 0, CARD_COUNT), siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange);
         renderShowMoreButton(sortMovies);
       }
       );
