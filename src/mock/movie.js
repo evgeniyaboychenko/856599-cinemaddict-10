@@ -57,6 +57,7 @@ const generateRating = () => {
 
 export const generateMovieCard = () => {
   return {
+    id: String(new Date() + Math.random()),
     posters: SRC_IMAGES[getRandomNumber(SRC_IMAGES.length)],
     title: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],
     originalTitle: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],

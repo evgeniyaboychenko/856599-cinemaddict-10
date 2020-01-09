@@ -18,3 +18,9 @@ export const MOVIE_COUNT = 9;
 export const CARD_COUNT_TOP = 2;
 
 export const dataSort = [`default`, `rating`, `date`];
+export const FilterType = {
+  ALL:`All movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`
+}

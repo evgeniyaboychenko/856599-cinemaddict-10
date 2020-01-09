@@ -39,9 +39,10 @@ const getCardShowing = (cards, start, count) => {
 
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, moviesModel) {
     this._container = container;
-    this._movies = [];
+    this._moviesModel = moviesModel;
+    //this._movies = [];
     this._sortFilmComponent = new SortFilmComponent();
     this._listFilmCardsComponent = new ListFilmCardsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
@@ -61,20 +62,26 @@ export default class PageController {
   }
 
   _onDataChange(movieController, oldData, newData) {
-    const index = this._movies.findIndex((it) => it === oldData);
-
-    if (index === -1) {
-      return;
+    const isSuccess = this._moviesModel.updateMovies(oldData.id, newData);
+    if (isSuccess) {
+      movieController.render(newData);
     }
+    // const index = this._movies.findIndex((it) => it === oldData);
 
-    const copyMovies = this._movies.slice();
-    copyMovies.splice(index, 1, newData);
-    this._movies = copyMovies;
-    movieController.render(this._movies[index]);
+    // if (index === -1) {
+    //   return;
+    // }
+
+    // const copyMovies = this._movies.slice();
+    // copyMovies.splice(index, 1, newData);
+    // this._movies = copyMovies;
+
+
+    //movieController.render(this._movies[index]);
 
   }
 
-  render(movies) {
+  render() {
 
     const renderCard = (cards, container, onDataChange, onViewChange) => {
       cards.forEach((card) => {
@@ -85,7 +92,8 @@ export default class PageController {
 
       });
     };
-    this._movies = movies;
+    //this._movies = movies;
+    const movies = this._moviesModel.getMovies();
 
     const drawMovieCards = () => {
 
@@ -93,16 +101,16 @@ export default class PageController {
       render(this._container, this._listFilmCardsComponent, RenderPosition.BEFOREEND);
       const siteFilmsList = this._listFilmCardsComponent.getElement().querySelector(`.films-list`);
       const siteFilmsListContainerElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list__container`);
-      renderCard(getCardShowing(this._movies, 0, CARD_COUNT), siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange);
+      renderCard(getCardShowing(movies, 0, CARD_COUNT), siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange);
       const siteFilmListContainerExtraElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list--extra`);
 
-      if (isTopMovieShowing(this._movies, `rating`)) {
-        renderCard(getTopMovie(this._movies, `rating`), siteFilmsListContainerElements[1], this._onDataChange, this._onViewChange);
+      if (isTopMovieShowing(movies, `rating`)) {
+        renderCard(getTopMovie(movies, `rating`), siteFilmsListContainerElements[1], this._onDataChange, this._onViewChange);
       } else {
         siteFilmListContainerExtraElements[0].classList.add(`visually-hidden`);
       }
-      if (isTopMovieShowing(this._movies, `commentsCount`)) {
-        renderCard(getTopMovie(this._movies, `commentsCount`), siteFilmsListContainerElements[2], this._onDataChange, this._onViewChange);
+      if (isTopMovieShowing(movies, `commentsCount`)) {
+        renderCard(getTopMovie(movies, `commentsCount`), siteFilmsListContainerElements[2], this._onDataChange, this._onViewChange);
       } else {
         siteFilmListContainerExtraElements[1].classList.add(`visually-hidden`);
       }
@@ -131,7 +139,8 @@ export default class PageController {
         this._showMoreButtonComponent.setClickHandler(onLoadCardsButtonClick);
       };
 
-      renderShowMoreButton(this._movies);
+      renderShowMoreButton(movies);
+
       const sortFilmCards = (filmCards, field) => {
         return (filmCards.slice().sort((a, b) => {
           return b[field] - a[field];
@@ -139,16 +148,16 @@ export default class PageController {
       };
 
       this._sortFilmComponent.setSortTypeChangeHandler((sortType) => {
-        let sortMovies = this._movies;
+        let sortMovies = movies;
         switch (sortType) {
           case SortType.DATE:
-            sortMovies = sortFilmCards(this._movies, `releaseDate`);
+            sortMovies = sortFilmCards(movies, `releaseDate`);
             break;
           case SortType.RATING:
-            sortMovies = sortFilmCards(this._movies, `rating`);
+            sortMovies = sortFilmCards(movies, `rating`);
             break;
           case SortType.DEFAULT:
-            sortMovies = this._movies;
+            sortMovies = movies;
             break;
         }
 

@@ -9,6 +9,9 @@ import {MOVIE_COUNT} from './const.js';
 
 import {render, RenderPosition} from './utils/render.js';
 import PageController from './controllers/page.js';
+import FilterController from './controllers/filter.js';
+
+import MoviesModel from './models/movies.js';
 
 const movieCards = generateMovieCards(MOVIE_COUNT);
 const movieFilters = generateMovieFilters(movieCards);
@@ -18,10 +21,19 @@ render(siteHeaderElement, new ProfileUserComponent(movieFilters[1].count), Rende
 
 const siteMainElement = document.querySelector(`.main`);
 
-render(siteMainElement, new MainNavigationComponent(movieFilters), RenderPosition.BEFOREEND);
 
-const pageController = new PageController(siteMainElement);
-pageController.render(movieCards);
+const moviesModel = new MoviesModel();
+moviesModel.setMovies(movieCards);
+
+// render(siteMainElement, new MainNavigationComponent(movieFilters), RenderPosition.BEFOREEND);
+const filterController = new FilterController(siteMainElement, moviesModel);
+filterController.render();
+
+// const pageController = new PageController(siteMainElement);
+// pageController.render(movieCards);
+const pageController = new PageController(siteMainElement, moviesModel);
+pageController.render();
+
 
 // показать кол-во фильмов в футере
 const siteFooterStatisticsElement = document.querySelector(`.footer__statistics`);
