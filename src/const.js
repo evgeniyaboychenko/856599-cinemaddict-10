@@ -14,7 +14,7 @@ export const MONTHS = [
 ];
 
 export const CARD_COUNT = 5;
-export const MOVIE_COUNT = 17;
+export const MOVIE_COUNT = 9;
 export const CARD_COUNT_TOP = 2;
 
 export const dataSort = [`default`, `rating`, `date`];

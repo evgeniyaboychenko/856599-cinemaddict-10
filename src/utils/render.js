@@ -1,6 +1,7 @@
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`
 };
 // фун-ия создания DOM узда
 export const createElement = (template) => {
@@ -18,6 +19,9 @@ export const render = (container, element, place) => {
     case RenderPosition.BEFOREEND:
       container.append(element.getElement());
       break;
+    case RenderPosition.AFTEREND:
+      container.after(element.getElement());
+      break;
   }
 };
 
@@ -25,4 +29,19 @@ export const render = (container, element, place) => {
 export const removeComponent = (component) => {
   component.getElement().remove();
   component.removeElement();
+};
+
+
+export const replace = (newComponent, oldComponent) => {
+  const oldElement = oldComponent.getElement();
+  const parentElement = oldElement.parentElement;
+  const newElement = newComponent.getElement();
+
+  const isExistElements = Boolean(parentElement && newElement && oldElement);
+
+  if (isExistElements && parentElement.contains(oldElement)) {
+    parentElement.replaceChild(newElement, oldElement);
+    return true;
+  }
+  return false;
 };

@@ -1,4 +1,6 @@
-import AbstractComponent from './abstract-component.js';
+// import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component.js';
+
 const COMMENTS_LENGTH = 140;
 
 // функция возвращающая Карточку фильма
@@ -12,7 +14,7 @@ const generateDateRelease = (date) => {
 };
 
 const createFilmCardTemplate = (film) => {
-  const {posters, title, description, rating, releaseDate, runtime, genres, commentsCount} = film;
+  const {posters, title, description, rating, releaseDate, runtime, genres, commentsCount, isWatchlist, isHistory, isFavorites} = film;
   const shortDescription = cropText(description);
   const releaseDateYear = generateDateRelease(releaseDate);
   return (
@@ -28,15 +30,15 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${shortDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist  ${isWatchlist ? `film-card__controls-item--active` : ``}">Add to watchlist</button>
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isHistory ? `film-card__controls-item--active` : ``}">Mark as watched</button>
+        <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavorites ? `film-card__controls-item--active` : ``}">Mark as favorite</button>
       </form>
     </article>`
   );
 };
 
-export default class FilmCard extends AbstractComponent {
+export default class FilmCard extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
@@ -65,4 +67,17 @@ export default class FilmCard extends AbstractComponent {
   removeCommentsClickHandler(handler) {
     this.getElement().querySelector(`.film-card__comments`).removeEventListener(`click`, handler);
   }
+
+  setWatchlistButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, handler);
+  }
+
+  setWatchedButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, handler);
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, handler);
+  }
+
 }
