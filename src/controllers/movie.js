@@ -99,7 +99,7 @@ export default class MovieController {
         this._aboutFilmPopupComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
 
         this._aboutFilmPopupComponent.setCommentDeleteButtonClickHandler(onCommentDeleteButtonClick);
-        this._aboutFilmPopupComponent.setCommentAddPressHandler(onCommentAdd);
+        this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
 
         this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
       }
@@ -128,7 +128,7 @@ export default class MovieController {
       this._aboutFilmPopupComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
 
       this._aboutFilmPopupComponent.setCommentDeleteButtonClickHandler(onCommentDeleteButtonClick);
-      this._aboutFilmPopupComponent.setCommentAddPressHandler(onCommentAdd);
+      this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
 
       this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
     };

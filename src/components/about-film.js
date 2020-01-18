@@ -308,7 +308,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     }
 
     if (this._onCommentAdd) {
-      this.setCommentAddPressListener(this._onCommentAdd);
+      this.setCommentAddListener(this._onCommentAdd);
     }
 
   }
@@ -400,7 +400,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this.setCommentDeleteButtonListener(this._onCommentDeleteButtonClick);
   }
 
-  setCommentAddPressListener(onCommentAdd) {
+  setCommentAddListener(onCommentAdd) {
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, (evt) => {
       if (evt.key === `Enter` && evt.ctrlKey) {
         this._saveTextComment();
@@ -416,8 +416,8 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     });
   }
 
-  setCommentAddPressHandler(handler) {
+  setCommentAddHandler(handler) {
     this._onCommentAdd = handler;
-    this.setCommentAddPressListener(this._onCommentAdd);
+    this.setCommentAddListener(this._onCommentAdd);
   }
 }
