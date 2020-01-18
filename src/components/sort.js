@@ -22,6 +22,17 @@ export default class SortFilm extends AbstractComponent {
     this._currenSortType = SortType.DEFAULT;
   }
 
+  setDefaultSort() {
+    this._currenSortType = SortType.DEFAULT;
+    const sortButtons = this.getElement().querySelectorAll(`.sort__button`);
+    sortButtons.forEach((item) => {
+      if (item.classList.contains(`sort__button--active`)) {
+        item.classList.remove(`sort__button--active`);
+      }
+    });
+    this.getElement().querySelector(`a[data-sort-type="Sort by default"]`).classList.add(`sort__button--active`);
+  }
+
   getTemplate() {
     return createSortFilmTemplate();
   }

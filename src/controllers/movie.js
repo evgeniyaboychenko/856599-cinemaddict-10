@@ -1,21 +1,26 @@
 import FilmCardComponent from '../components/film-card.js';
 import AboutFilmPopupComponent from '../components/about-film.js';
-
-import {generateMovieComments} from '../mock/comment.js';
 const siteBody = document.querySelector(`body`);
 import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
 
+import {FilterType} from '../const.js';
+
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, onDataCommentChange) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._onCommentDataChange = onDataCommentChange;
 
     this._aboutFilmPopupComponent = null;
     this._filmCardComponent = null;
     this._userRatingComponent = null;
     this._isOpenPopup = false;
+  }
 
+  destroy() {
+    removeComponent(this._filmCardComponent);
+    removeComponent(this._aboutFilmPopupComponent);
   }
 
   setDefaultView() {
@@ -25,7 +30,7 @@ export default class MovieController {
     }
   }
 
-  render(card) {
+  render(card, comments) {
     const addListenerCardClick = () => {
       this._filmCardComponent.setPosterClickHandler(onFilmCardElementClick);
       this._filmCardComponent.setTitleClickHandler(onFilmCardElementClick);
@@ -44,7 +49,7 @@ export default class MovieController {
       evt.preventDefault();
       let newCard = Object.assign({}, card);
       newCard.isWatchlist = !newCard.isWatchlist;
-      this._onDataChange(this, card, newCard);
+      this._onDataChange(this, card, newCard, FilterType.WATCHLIST);
     };
 
     const onWatchedButtonClick = (evt) => {
@@ -52,14 +57,14 @@ export default class MovieController {
       let newCard = Object.assign({}, card);
       newCard.isHistory = !newCard.isHistory;
       newCard.userRating = 0;
-      this._onDataChange(this, card, newCard);
+      this._onDataChange(this, card, newCard, FilterType.HISTORY);
     };
 
     const onFavoriteButtonClick = (evt) => {
       evt.preventDefault();
       let newCard = Object.assign({}, card);
       newCard.isFavorites = !newCard.isFavorites;
-      this._onDataChange(this, card, newCard);
+      this._onDataChange(this, card, newCard, FilterType.FAVORITES);
     };
 
     const onUserRatingButtonClick = (userRating) => {
@@ -68,12 +73,18 @@ export default class MovieController {
       this._onDataChange(this, card, newCard);
     };
 
+    const onCommentDeleteButtonClick = (idComment) => {
+      this._onCommentDataChange(this, card.id, idComment, null);
+    };
+
+    const onCommentAdd = (localComment) => {
+      this._onCommentDataChange(this, card.id, null, localComment);
+    };
 
     const oldAboutFilmPopupComponent = this._aboutFilmPopupComponent;
     const oldFilmCardComponent = this._filmCardComponent;
 
-
-    this._aboutFilmPopupComponent = new AboutFilmPopupComponent(card, generateMovieComments(card.commentsCount));
+    this._aboutFilmPopupComponent = new AboutFilmPopupComponent(card, comments);
     this._filmCardComponent = new FilmCardComponent(card);
 
 
@@ -86,6 +97,9 @@ export default class MovieController {
         this._aboutFilmPopupComponent.setWatchlistButtonClickHandler(onWatchlistButtonClick);
         this._aboutFilmPopupComponent.setWatchedButtonClickHandler(onWatchedButtonClick);
         this._aboutFilmPopupComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
+
+        this._aboutFilmPopupComponent.setCommentDeleteButtonClickHandler(onCommentDeleteButtonClick);
+        this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
 
         this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
       }
@@ -104,7 +118,6 @@ export default class MovieController {
       render(siteBody, this._aboutFilmPopupComponent, RenderPosition.BEFOREEND);
       this._isOpenPopup = true;
 
-
       document.addEventListener(`keydown`, onPopupEscPress);
       this._aboutFilmPopupComponent.recoveryListeners();
 
@@ -113,6 +126,9 @@ export default class MovieController {
       this._aboutFilmPopupComponent.setWatchlistButtonClickHandler(onWatchlistButtonClick);
       this._aboutFilmPopupComponent.setWatchedButtonClickHandler(onWatchedButtonClick);
       this._aboutFilmPopupComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
+
+      this._aboutFilmPopupComponent.setCommentDeleteButtonClickHandler(onCommentDeleteButtonClick);
+      this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
 
       this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
     };
@@ -126,4 +142,3 @@ export default class MovieController {
     };
   }
 }
-

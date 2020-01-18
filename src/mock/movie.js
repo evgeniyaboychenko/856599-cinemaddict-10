@@ -2,7 +2,6 @@ import {getRandomNumber} from '../utils/utils.js';
 import {getRandomRange} from '../utils/utils.js';
 import {generateRandomArray} from '../utils/utils.js';
 import {generateFlagValue} from '../utils/utils.js';
-
 import {getObjectsArray} from '../utils/utils.js';
 
 const MOVIE_TITLES = [`Frozen II`, `The Shawshank Redemption`, `Forrest Gump`, `The Matrix`, `The Matrix`, `The Lord of the Rings: The Fellowship of the Ring`, `Pulp Fiction`, `The Silence of the Lambs`, `Saving Private Ryan`, `Gladiator`, `Se7en`];
@@ -57,6 +56,7 @@ const generateRating = () => {
 
 export const generateMovieCard = () => {
   return {
+    id: String(new Date().valueOf() + Math.random()),
     posters: SRC_IMAGES[getRandomNumber(SRC_IMAGES.length)],
     title: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],
     originalTitle: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],
@@ -71,7 +71,6 @@ export const generateMovieCard = () => {
     country: COUNTRIES[getRandomNumber(COUNTRIES.length)],
     genres: generateRandomArray(GENRES, getRandomRange(1, 4)),
     ageLimit: AGE_LIMITS[getRandomNumber(AGE_LIMITS.length)],
-    commentsCount: getRandomNumber(10),
     isWatchlist: generateFlagValue(),
     isHistory: generateFlagValue(),
     isFavorites: generateFlagValue(),
