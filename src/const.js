@@ -14,13 +14,19 @@ export const MONTHS = [
 ];
 
 export const CARD_COUNT = 5;
-export const MOVIE_COUNT = 9;
+export const MOVIE_COUNT = 18;
 export const CARD_COUNT_TOP = 2;
 
 export const dataSort = [`default`, `rating`, `date`];
 export const FilterType = {
-  ALL:`All movies`,
+  ALL: `All movies`,
   WATCHLIST: `Watchlist`,
   HISTORY: `History`,
   FAVORITES: `Favorites`
-}
+};
+export const EmojiType = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`
+};

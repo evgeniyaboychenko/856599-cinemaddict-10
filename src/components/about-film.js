@@ -1,13 +1,9 @@
 import {MONTHS} from '../const.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
+import {generateDateComment, getDateComment} from '../mock/comment.js';
 const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
+import {EmojiType} from '../const.js';
 
-const EmojiType = {
-  SMILE: `smile`,
-  SLEEPING: `sleeping`,
-  PUKE: `puke`,
-  ANGRY: `angry`
-};
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -24,14 +20,14 @@ const createCommentsMarkup = (comments) => {
     return (
       `<li class="film-details__comment">
         <span class="film-details__comment-emoji">
-          <img src="./images/emoji/${comment.emoji}" width="55" height="55" alt="emoji">
+          <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji">
         </span>
         <div>
           <p class="film-details__comment-text">${comment.textComment}</p>
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${comment.autorComment}</span>
             <span class="film-details__comment-day">${comment.dateComment}</span>
-            <button class="film-details__comment-delete">Delete</button>
+            <button class="film-details__comment-delete" value="${comment.id}">Delete</button>
           </p>
         </div>
       </li>`
@@ -70,16 +66,31 @@ const determineEndingWordGenre = (number) => {
 };
 
 // функция возвращающая Popup о фильме
-const createAboutFilmPopupTemplate = (film, comments, selectedEmoji, textComment) => {
-  const {posters, title, originalTitle, description, rating,
-    director, writers, actors, releaseDate, runtime, country, genres, ageLimit, commentsCount,
-    isWatchlist, isHistory, isFavorites, userRating} = film;
+const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textComment) => {
+  const {comments, posters, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, isWatchlist, isHistory, isFavorites, userRating} = film;
   const genresMarkup = createGenresMarkup(genres);
   const userRatingMarkup = createUserRatingMarkup(userRating);
   const releaseDateFull = generateDateRelease(releaseDate);
-  const commentsMarkup = createCommentsMarkup(comments);
+  const commentsMarkup = createCommentsMarkup(commentsFilm);
+
   const getCheckedInput = (emoji) => {
     return selectedEmoji === emoji ? `checked` : ``;
+  };
+
+  const getImageEmoji = (countComments) => {
+    if (countComments === 0 && selectedEmoji === null) {
+      selectedEmoji = EmojiType.SMILE;
+      return `<img src="images/emoji/${EmojiType.SMILE}.png" width="55" height="55" alt="emoji">`;
+    } else {
+      if (countComments === 0 && selectedEmoji) {
+        return `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji">`;
+      } else {
+        if (countComments && selectedEmoji === null) {
+          return ``;
+        }
+      }
+      return `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji">`;
+    }
   };
 
   return (
@@ -187,7 +198,7 @@ const createAboutFilmPopupTemplate = (film, comments, selectedEmoji, textComment
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
               ${commentsMarkup}
@@ -195,11 +206,11 @@ const createAboutFilmPopupTemplate = (film, comments, selectedEmoji, textComment
 
             <div class="film-details__new-comment">
               <div for="add-emoji" class="film-details__add-emoji-label">
-              ${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji">` : ``}
+              ${getImageEmoji(comments.length)}
               </div>
 
               <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${textComment ? textComment : ``}</textarea>
+                <textarea class="film-details__comment-input" placeholder=${comments.length > 0 ? `"Select reaction below and write comment here"` : `"Great movie!"`}  name="comment">${textComment ? textComment : ``}</textarea>
               </label>
 
               <div class="film-details__emoji-list">
@@ -237,10 +248,13 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._film = film;
     this._comments = comments;
     this._textComment = null;
-    this._currentEmoji = null;
+    this._currentEmoji = this._getDefaultEmoji();
     this._currentUserRating = 0;
   }
 
+  _getDefaultEmoji() {
+    return this._comments.length === 0 ? EmojiType.SMILE : null;
+  }
   recoveryListeners() {
     this._subscribeOnEvents();
   }
@@ -256,7 +270,6 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
 
       if (evt.target.tagName !== `INPUT`) {
@@ -270,7 +283,6 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       }
 
       this._onEmojiUpdate(emojiType);
-
     });
 
     if (this._onCloseButtonClick) {
@@ -289,6 +301,14 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
 
     if (this._onUserRatingButtonClick) {
       this.setUserRatingButtonListener(this._onUserRatingButtonClick);
+    }
+
+    if (this._onCommentDeleteButtonClick) {
+      this.setCommentDeleteButtonListener(this._onCommentDeleteButtonClick);
+    }
+
+    if (this._onCommentAdd) {
+      this.setCommentAddPressListener(this._onCommentAdd);
     }
 
   }
@@ -361,5 +381,43 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
   setUserRatingButtonClickHandler(handler) {
     this._onUserRatingButtonClick = handler;
     this.setUserRatingButtonListener(this._onUserRatingButtonClick);
+  }
+
+
+  setCommentDeleteButtonListener(onCommentDeleteButtonClick) {
+    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      if (evt.target.tagName !== `BUTTON`) {
+        return;
+      }
+      const currentIdComment = evt.target.value;
+      onCommentDeleteButtonClick(currentIdComment);
+    });
+  }
+
+  setCommentDeleteButtonClickHandler(handler) {
+    this._onCommentDeleteButtonClick = handler;
+    this.setCommentDeleteButtonListener(this._onCommentDeleteButtonClick);
+  }
+
+  setCommentAddPressListener(onCommentAdd) {
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, (evt) => {
+      if (evt.key === `Enter` && evt.ctrlKey) {
+        this._saveTextComment();
+        if (this._textComment && this._currentEmoji) {
+          let localComment = {
+            textComment: this._textComment,
+            emoji: this._currentEmoji,
+            dateComment: getDateComment(generateDateComment()),
+          };
+          onCommentAdd(localComment);
+        }
+      }
+    });
+  }
+
+  setCommentAddPressHandler(handler) {
+    this._onCommentAdd = handler;
+    this.setCommentAddPressListener(this._onCommentAdd);
   }
 }

@@ -25,13 +25,21 @@ export default class MainNavigation extends AbstractComponent {
     this._currentFilterType = FilterType.ALL;
   }
 
+  setCurrentFilter(currentFiter) {
+    this._currentFilterType = currentFiter;
+    this.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
+      if (item.classList.contains(`main-navigation__item--active`)) {
+        item.classList.remove(`main-navigation__item--active`);
+      }
+    });
+    this.getElement().querySelector(`a[data-filter-type="${currentFiter}"]`).classList.add(`main-navigation__item--active`);
+  }
+
   getTemplate() {
     return createMainNavigationTemplate(this._filters);
   }
 
-  setFilterButtonClick(handler) {
-    console.log(this.getElement());
-
+  setFilterChangedHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
@@ -57,8 +65,8 @@ export default class MainNavigation extends AbstractComponent {
         }
       });
       evt.target.classList.add(`main-navigation__item--active`);
-console.log(this._currentFilterType);
+
       handler(this._currentFilterType);
-  });
+    });
   }
 }

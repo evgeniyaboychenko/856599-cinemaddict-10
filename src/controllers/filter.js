@@ -1,61 +1,55 @@
-import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
+import {render, RenderPosition, replace} from '../utils/render.js';
 import MainNavigationComponent from '../components/main-navigation.js';
 import {FilterType} from '../const.js';
-
-//const FILTER_NAMES = [`All movies`, `Watchlist`, `History`, `Favorites`];
-
-export const getMoviesByFilter = (movies, checkedFilter) => {
-  switch (checkedFilter) {
-    case FilterType.ALL:
-      return movies;
-    case FilterType.WATCHLIST:
-      return movies.filter(it => it.isWatchlist);
-    case FilterType.HISTORY:
-      return movies.filter(it => it.isHistory);
-    case FilterType.FAVORITES:
-      return movies.filter(it => it.isFavorites);
-  }
-  return movies;
-}
+import {getMoviesByFilter} from '../models/movies.js';
 
 const generateMovieFilters = (films, checkedFilter) => {
-    return Object.values(FilterType).map((it, index) => {
-      return {
-        name: it,
-        count: index === 0 ? films.length : getMoviesByFilter(films, it).length,
-        checked: it === checkedFilter,
-      };
-    });
+  return Object.values(FilterType).map((it, index) => {
+    return {
+      name: it,
+      count: index === 0 ? films.length : getMoviesByFilter(films, it).length,
+      checked: it === checkedFilter,
+    };
+  });
 };
 
-
-
 export default class FilterController {
-  constructor(container, movies) {
+  constructor(container, moviesModel) {
     this._container = container;
-    this._movies = movies;
+    this._moviesModel = moviesModel;
     this._activeFilterType = FilterType.ALL;
 
-    this._onFilterButtonClick = this._onFilterButtonClick.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
+    this._onDataChange = this._onDataChange.bind(this);
+    this._moviesModel.setDataChangedHandler(this._onDataChange);
+
+    this._mainNavigationComponent = null;
   }
 
-
+  _onDataChange() {
+    this.render();
+    this._mainNavigationComponent.setCurrentFilter(this._activeFilterType);
+  }
 
   render() {
-    const movies = this._movies.getMovies();
+    const movies = this._moviesModel.getMoviesAll();
     const filters = generateMovieFilters(movies, this._activeFilterType);
 
+    const oldMainNavigationComponent = this._mainNavigationComponent;
     this._mainNavigationComponent = new MainNavigationComponent(filters);
-    render(this._container, this._mainNavigationComponent, RenderPosition.BEFOREEND);
 
-
-
-    this._mainNavigationComponent.setFilterButtonClick(this._onFilterButtonClick);
-
-  }
-  _onFilterButtonClick(filterrr) {
-    console.log(filterrr);
+    if (oldMainNavigationComponent) {
+      replace(this._mainNavigationComponent, oldMainNavigationComponent);
+    } else {
+      render(this._container, this._mainNavigationComponent, RenderPosition.BEFOREEND);
     }
 
+    this._mainNavigationComponent.setFilterChangedHandler(this._onFilterChange);
+  }
+
+  _onFilterChange(filterType) {
+    this._activeFilterType = filterType;
+    this._moviesModel.setFilter(this._activeFilterType);
+  }
 }

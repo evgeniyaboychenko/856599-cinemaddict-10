@@ -1,4 +1,3 @@
-// import AbstractComponent from './abstract-component.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
 
 const COMMENTS_LENGTH = 140;
@@ -14,7 +13,7 @@ const generateDateRelease = (date) => {
 };
 
 const createFilmCardTemplate = (film) => {
-  const {posters, title, description, rating, releaseDate, runtime, genres, commentsCount, isWatchlist, isHistory, isFavorites} = film;
+  const {comments, posters, title, description, rating, releaseDate, runtime, genres, isWatchlist, isHistory, isFavorites} = film;
   const shortDescription = cropText(description);
   const releaseDateYear = generateDateRelease(releaseDate);
   return (
@@ -28,7 +27,7 @@ const createFilmCardTemplate = (film) => {
       </p>
       <img src="./images/posters/${posters}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
-      <a class="film-card__comments">${commentsCount} comments</a>
+      <a class="film-card__comments">${comments.length} comments</a>
       <form class="film-card__controls">
         <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist  ${isWatchlist ? `film-card__controls-item--active` : ``}">Add to watchlist</button>
         <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isHistory ? `film-card__controls-item--active` : ``}">Mark as watched</button>
