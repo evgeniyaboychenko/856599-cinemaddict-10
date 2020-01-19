@@ -94,6 +94,17 @@ export default class PageController {
     this._currenSortType = SortType.DEFAULT;
   }
 
+  show() {
+    this._listFilmCardsComponent.show();
+    this._sortFilmComponent.show();
+  }
+
+  hide() {
+    this._listFilmCardsComponent.hide();
+    this._sortFilmComponent.hide();
+  }
+
+
   _removeMovies() {
     this._movieControllers.forEach((movieController) => movieController.destroy());
     this._movieControllers = [];
@@ -144,7 +155,7 @@ export default class PageController {
     if (!newComment) {
       const isSuccess = this._moviesModel.removeComment(idCard, oldIdComment);
       if (isSuccess) {
-        const newData = this._moviesModel.getMovies().find((item) => item.id === idCard);
+        const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
         movieController.render(newData, this._moviesModel.getComments(newData.id));
         sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
         this._renderMostCommentedMovie();
@@ -152,7 +163,7 @@ export default class PageController {
     } else {
       const isSuccess = this._moviesModel.addComment(idCard, newComment);
       if (isSuccess) {
-        const newData = this._moviesModel.getMovies().find((item) => item.id === idCard);
+        const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
         movieController.render(newData, this._moviesModel.getComments(newData.id));
         sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
         this._renderMostCommentedMovie();
@@ -234,7 +245,7 @@ export default class PageController {
   }
 
   _renderMostCommentedMovie() {
-    const movies = this._getSortMovies(this._currenSortType, this._moviesModel.getMovies());
+    const movies = this._getSortMovies(this._currenSortType, this._moviesModel.getMoviesAll());
     const siteFilmListContainerExtraElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list--extra`);
     this._siteFilmsListContainerElements[2].innerHTML = ``;
     if (isTopCommentedMovieShowing(movies, `comments`)) {

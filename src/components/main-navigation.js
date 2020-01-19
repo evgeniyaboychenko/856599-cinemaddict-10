@@ -1,6 +1,14 @@
 import AbstractComponent from './abstract-component.js';
 import {FilterType} from '../const.js';
 
+// export const MenuItem = {
+//   ALL_MOVIES: `control__new-task`,
+//   WATCHLIST:
+//   HISTORY:
+//   FAVORITES:
+//   STATS: `control__statistic`,
+// };
+
 
 const createFilterMarkup = (filter) => {
   const {name, count} = filter;
@@ -13,7 +21,7 @@ const createMainNavigationTemplate = (filters) => {
   return (
     `<nav class="main-navigation">
 ${filterMarkup}
-    <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
+    <a href="#stats" data-filter-type="Stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
   </nav>`
   );
 };
@@ -24,6 +32,35 @@ export default class MainNavigation extends AbstractComponent {
     this._filters = filters;
     this._currentFilterType = FilterType.ALL;
   }
+
+//   setOnMenuStatsChangeHandler(handler) {
+//     this.getElement().querySelector(`a[data-filter-type="Stats"]`).addEventListener(`click`, (evt) => {
+//       evt.preventDefault();
+// console.log(evt.target);
+//       if (evt.target.tagName !== `A`) {
+//         return;
+//       }
+
+//       const menuStats = evt.target.dataset.filterType;
+
+//       this.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
+//         if (item.classList.contains(`main-navigation__item--active`)) {
+//           item.classList.remove(`main-navigation__item--active`);
+//         }
+//       });
+//       evt.target.classList.add(`main-navigation__item--active`);
+//       handler(menuStats);
+//     });
+//   }
+
+//   setActiveMenuStats(menuStats) {
+//    this.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
+//     if (item.classList.contains(`main-navigation__item--active`)) {
+//       item.classList.remove(`main-navigation__item--active`);
+//     }
+//   });
+//   this.getElement().querySelector(`a[data-filter-type="Stats"]`).classList.add(`main-navigation__item--active`);
+//   }
 
   setCurrentFilter(currentFiter) {
     this._currentFilterType = currentFiter;
@@ -47,9 +84,10 @@ export default class MainNavigation extends AbstractComponent {
         return;
       }
 
-      if (evt.target.classList.contains(`main-navigation__item--additional`)) {
-        return;
-      }
+      // if (evt.target.classList.contains(`main-navigation__item--additional`)) {
+
+      //   return;
+      // }
 
       const filterType = evt.target.dataset.filterType;
 

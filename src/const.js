@@ -1,3 +1,5 @@
+//import { Stats } from "webpack";
+
 export const MONTHS = [
   `January`,
   `February`,
@@ -24,6 +26,15 @@ export const FilterType = {
   HISTORY: `History`,
   FAVORITES: `Favorites`
 };
+
+// export const FilterType = {
+//   ALL: `All movies`,
+//   WATCHLIST: `Watchlist`,
+//   HISTORY: `History`,
+//   FAVORITES: `Favorites`,
+//   STATS: `Stats`
+// };
+
 export const EmojiType = {
   SMILE: `smile`,
   SLEEPING: `sleeping`,
