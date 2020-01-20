@@ -3,56 +3,58 @@ import Chart from 'chart.js';
 import ChartDatalabels from 'chartjs-plugin-datalabels';
 import {generateMovieFilters} from '../mock/filters.js';
 import {getProfileRating} from '../utils/utils.js';
+import moment from 'moment';
 
 const getWatchedMovies = (movies) => {
   return movies.filter((movie) => movie.isHistory);
 };
 
 const getTotalDuration = (watchedMovies) => {
-  const rr = 0;
+  let duration = 0;
   watchedMovies.forEach((watchedMovie) => {
-    //console.log(watchedMovie.runtime);
-  // считаю время
+    duration = duration + watchedMovie.runtime;
   });
-  return rr;
+  return duration;
 };
 
-const getTopGenres = (watchedMovies) => {
-  let genress = [];
+const getGenres = (watchedMovies) => {
+  let genres = [];
   watchedMovies.forEach((movie) => {
-    genress = genress.concat(movie.genres);
+    genres = genres.concat(movie.genres);
   });
-  console.log(genress);
-  return genress;
+  return genres;
 };
 
-const getGeresCount = (genres) => {
-// return {
-//   genre: type,
-//   count : 10
-// }
-let filtredGenre =[];
-let rr = {};
-let firstElement = genres.shift();
-filtredGenre = genres.filter((item) => item === firstElement);
-rr.favoriteGenre =firstElement;
-rr.count = filtredGenre.length + 1;
-console.log(rr);
-
-return {
-  favoriteGenre: `sci`,
-  count: 3,
-}
+const getGenresWithCount = (watchedMovies) => {
+  let genres = getGenres(watchedMovies);
+  let genresWithCount = [];
+  genres = genres.sort();
+  let index = 0;
+  while(genres.length !== 0) {
+    let topGenre = genres[0];
+    genresWithCount.push({
+     genre: topGenre,
+     count: genres.filter((i) => topGenre === i).length,
+    }
+    );
+    genres.splice(0, genresWithCount[index].count);
+    index ++;
+  }
+  genresWithCount.sort((a,b) => {
+    return (b.count - a.count);
+  });
+    return genresWithCount;
 };
 
 // функция возвращающая блок, для стаистики
 const createStatisticTemplate = (moviesModel) => {
   const movies = moviesModel.getMoviesAll();
-  console.log(movies);
   const countWatchedMovies = getWatchedMovies(movies).length;
   const profileRating = getProfileRating(countWatchedMovies);
-  const d = getTotalDuration(getWatchedMovies(movies));
-  const genresWithCoun = getGeresCount(getTopGenres(getWatchedMovies(movies)));
+  const totalDuration = getTotalDuration(getWatchedMovies(movies));
+  const totalDurationInHours = moment.duration(totalDuration, "minutes").hours();
+  const totalDurationInMinutes = moment.duration(totalDuration, "minutes").minutes();
+  const genresWithCount = getGenresWithCount(getWatchedMovies(movies));
   return (
     `<section class="statistic">
       ${profileRating ?
@@ -87,11 +89,11 @@ const createStatisticTemplate = (moviesModel) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+          <p class="statistic__item-text">${totalDurationInHours} <span class="statistic__item-description">h</span> ${totalDurationInMinutes} <span class="statistic__item-description">m</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
+          <p class="statistic__item-text">${genresWithCount[0].genre}</p>
         </li>
       </ul>
 
@@ -113,19 +115,22 @@ export default class Statistic extends AbstractSmartComponent {
   }
 
   _renderCharts() {
+    const movies = this._moviesModel.getMoviesAll();
+    const genresWithCount = getGenresWithCount(getWatchedMovies(movies));
+    const labelsChart = genresWithCount.map((item) => {return item.genre;});
+    const countChart = genresWithCount.map((item) => {return item.count;});
     Chart.defaults.global.defaultFontColor = 'white';
     Chart.defaults.global.defaultFontSize = 20;
-    console.log(Chart.defaults);
     const element = this.getElement();
     const daysCtx = element.querySelector(`.statistic__chart`);
     new Chart(daysCtx, {
       plugins: [ChartDatalabels],
       type: `horizontalBar`,
       data: {
-        labels: [`genre1`, `genre 2`, `genre1`, `genre 2`],
+        labels: labelsChart,
         datasets: [{
           dataset: 10,
-          data:[22, 34, 30, 49],
+          data: countChart,
           backgroundColor: `#ffe800` ,
           barThickness: 30,
         }]

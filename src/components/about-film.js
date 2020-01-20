@@ -3,7 +3,8 @@ import AbstractSmartComponent from './abstract-smart-component.js';
 import {generateDateComment, getDateComment} from '../mock/comment.js';
 const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
 import {EmojiType} from '../const.js';
-
+import moment from 'moment';
+import {getDurationMovie} from '../utils/utils.js';
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -70,7 +71,8 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
   const {comments, posters, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, isWatchlist, isHistory, isFavorites, userRating} = film;
   const genresMarkup = createGenresMarkup(genres);
   const userRatingMarkup = createUserRatingMarkup(userRating);
-  const releaseDateFull = generateDateRelease(releaseDate);
+  const releaseDateFull = moment(releaseDate).format(`DD MMMM YYYY`);
+  const runTime = getDurationMovie(runtime);
   const commentsMarkup = createCommentsMarkup(commentsFilm);
 
   const getCheckedInput = (emoji) => {
@@ -139,7 +141,7 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${runtime}</td>
+                  <td class="film-details__cell">${runTime}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>

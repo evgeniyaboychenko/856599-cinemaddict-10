@@ -1,3 +1,4 @@
+import moment from 'moment';
 // фун-ия возвращающая случайное число [0..number)
 export const getRandomNumber = (number) => {
   return Math.floor(Math.random() * number);
@@ -38,4 +39,10 @@ export const getProfileRating = (countWatchedFilms) => {
   } else {
     return `Movie Buff`;
   }
+};
+
+export const getDurationMovie = (time) => {
+  const timeInHours = moment.duration(time, "minutes").hours();
+  const timeInMinutes = moment.duration(time, "minutes").minutes();
+  return timeInHours !==0 ? `${timeInHours}h ${timeInMinutes}m`: `${timeInMinutes}m`;
 };
