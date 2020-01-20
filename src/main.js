@@ -34,7 +34,8 @@ generateCommentsForMovies(movieCards);
 const movieFilters = generateMovieFilters(movieCards);
 
 const siteHeaderElement = document.querySelector(`.header`);
-render(siteHeaderElement, new ProfileUserComponent(movieFilters[1].count), RenderPosition.BEFOREEND);
+const profileUserComponent = new ProfileUserComponent(movieFilters[2].count)
+render(siteHeaderElement, profileUserComponent, RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector(`.main`);
 
@@ -48,7 +49,7 @@ filterController.render();
 const pageController = new PageController(siteMainElement, moviesModel);
 pageController.render();
 
-const statisticComponent = new StatisticComponent();
+const statisticComponent = new StatisticComponent(moviesModel);
 render(siteMainElement, statisticComponent, RenderPosition.BEFOREEND);
 statisticComponent.hide();
 

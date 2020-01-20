@@ -26,3 +26,16 @@ export const getObjectsArray = (obj, count) => {
   return new Array(count)
     .fill(``).map(obj);
 };
+
+// функция возвращающая звание пользователя
+export const getProfileRating = (countWatchedFilms) => {
+  if (countWatchedFilms < 1) {
+    return ``;
+  } else if (countWatchedFilms < 11) {
+    return `Novice`;
+  } else if (countWatchedFilms < 21) {
+    return `Fan`;
+  } else {
+    return `Movie Buff`;
+  }
+};

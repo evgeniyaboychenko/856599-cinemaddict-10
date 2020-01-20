@@ -33,35 +33,6 @@ export default class MainNavigation extends AbstractComponent {
     this._currentFilterType = FilterType.ALL;
   }
 
-//   setOnMenuStatsChangeHandler(handler) {
-//     this.getElement().querySelector(`a[data-filter-type="Stats"]`).addEventListener(`click`, (evt) => {
-//       evt.preventDefault();
-// console.log(evt.target);
-//       if (evt.target.tagName !== `A`) {
-//         return;
-//       }
-
-//       const menuStats = evt.target.dataset.filterType;
-
-//       this.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
-//         if (item.classList.contains(`main-navigation__item--active`)) {
-//           item.classList.remove(`main-navigation__item--active`);
-//         }
-//       });
-//       evt.target.classList.add(`main-navigation__item--active`);
-//       handler(menuStats);
-//     });
-//   }
-
-//   setActiveMenuStats(menuStats) {
-//    this.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
-//     if (item.classList.contains(`main-navigation__item--active`)) {
-//       item.classList.remove(`main-navigation__item--active`);
-//     }
-//   });
-//   this.getElement().querySelector(`a[data-filter-type="Stats"]`).classList.add(`main-navigation__item--active`);
-//   }
-
   setCurrentFilter(currentFiter) {
     this._currentFilterType = currentFiter;
     this.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
