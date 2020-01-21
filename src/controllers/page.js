@@ -238,6 +238,9 @@ export default class PageController {
     this._siteFilmsListContainerElements[1].innerHTML = ``;
     if (isTopRatedMovieShowing(movies, `rating`)) {
       this._renderCardTop(getTopRatedMovie(movies, `rating`), this._siteFilmsListContainerElements[1], this._onDataChange, this._onViewChange, this._onCommentDataChange);
+      if (siteFilmListContainerExtraElements[0].classList.contains(`visually-hidden`)) {
+        siteFilmListContainerExtraElements[0].classList.remove(`visually-hidden`);
+      }
     } else {
       siteFilmListContainerExtraElements[0].classList.add(`visually-hidden`);
     }
@@ -249,6 +252,9 @@ export default class PageController {
     this._siteFilmsListContainerElements[2].innerHTML = ``;
     if (isTopCommentedMovieShowing(movies, `comments`)) {
       this._renderCardTop(getTopCommentedMovie(movies, `comments`), this._siteFilmsListContainerElements[2], this._onDataChange, this._onViewChange, this._onCommentDataChange);
+      if (siteFilmListContainerExtraElements[1].classList.contains(`visually-hidden`)) {
+        siteFilmListContainerExtraElements[1].classList.remove(`visually-hidden`);
+      }
     } else {
       siteFilmListContainerExtraElements[1].classList.add(`visually-hidden`);
     }

@@ -312,7 +312,6 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     if (this._onCommentAdd) {
       this.setCommentAddListener(this._onCommentAdd);
     }
-
   }
 
   getTemplate() {

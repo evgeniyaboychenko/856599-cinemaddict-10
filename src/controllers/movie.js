@@ -69,6 +69,7 @@ export default class MovieController {
 
     const onUserRatingButtonClick = (userRating) => {
       let newCard = Object.assign({}, card);
+      
       newCard.userRating = userRating;
       this._onDataChange(this, card, newCard);
     };
