@@ -1,5 +1,3 @@
-//import { Stats } from "webpack";
-
 export const MONTHS = [
   `January`,
   `February`,
@@ -16,7 +14,7 @@ export const MONTHS = [
 ];
 
 export const CARD_COUNT = 5;
-export const MOVIE_COUNT = 4;
+export const MOVIE_COUNT = 18;
 export const CARD_COUNT_TOP = 2;
 
 export const dataSort = [`default`, `rating`, `date`];
@@ -34,14 +32,6 @@ export const FilterByDateForStatistic = {
   MONTH: `statistic-month`,
   YEAR: `statistic-year`
 };
-
-// export const FilterType = {
-//   ALL: `All movies`,
-//   WATCHLIST: `Watchlist`,
-//   HISTORY: `History`,
-//   FAVORITES: `Favorites`,
-//   STATS: `Stats`
-// };
 
 export const EmojiType = {
   SMILE: `smile`,

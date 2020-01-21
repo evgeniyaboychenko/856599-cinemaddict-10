@@ -2,7 +2,6 @@ import {render, RenderPosition, replace} from '../utils/render.js';
 import MainNavigationComponent from '../components/main-navigation.js';
 import {FilterType} from '../const.js';
 import {getMoviesByFilter} from '../models/movies.js';
-import StatisticComponent from '../components/statistic.js';
 
 const generateMovieFilters = (films, checkedFilter) => {
   return Object.values(FilterType).map((it, index) => {
@@ -31,10 +30,6 @@ export default class FilterController {
     this._handlerMenuChanged = null;
   }
 
-  // _onMenuStatsActive(){
-  //   return true;
-  // }
-
   _onDataChange() {
     this.render();
     this._mainNavigationComponent.setCurrentFilter(this._activeFilterType);
@@ -52,24 +47,15 @@ export default class FilterController {
     } else {
       render(this._container, this._mainNavigationComponent, RenderPosition.BEFOREEND);
     }
-
-   // this._statisticComponent = new StatisticComponent();
-    // console.log(this._statisticComponent);
-    //render(this._container, this._statisticComponent, RenderPosition.BEFOREEND);
-   // this._statisticComponent.hide();
     this._mainNavigationComponent.setFilterChangedHandler(this._onFilterChange);
-    // this._mainNavigationComponent.setOnMenuStatsChangeHandler(this._onMenuStatsClick);
   }
 
-  // _onMenuStatsClick() {
-  //   this._statisticComponent.show();
-  // }
   setOnMenuChanged(handler) {
     this._handlerMenuChanged = handler;
   }
 
   _onFilterChange(filterType) {
-    if(filterType === `Stats`) {
+    if (filterType === `Stats`) {
       this._handlerMenuChanged(true);
       return;
     }

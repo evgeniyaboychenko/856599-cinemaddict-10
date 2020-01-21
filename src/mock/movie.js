@@ -71,14 +71,14 @@ export const generateMovieCard = () => {
     writers: deleteLastItem((getText(generateRandomArray(PEOPLE_NAMES, 3), `, `))),
     actors: deleteLastItem((getText(generateRandomArray(PEOPLE_NAMES, 3), `, `))),
     releaseDate: getRandomRange(1661954344, 1579498575391),
-    runtime: getRandomRange(30, 320),
+    runtime: getRandomRange(30, 180),
     country: COUNTRIES[getRandomNumber(COUNTRIES.length)],
     genres: generateRandomArray(GENRES, getRandomRange(1, 4)),
     ageLimit: AGE_LIMITS[getRandomNumber(AGE_LIMITS.length)],
     isWatchlist: generateFlagValue(),
-    isHistory: false,//generateFlagValue(),
+    isHistory: generateFlagValue(),
     isFavorites: generateFlagValue(),
-    watching_date: moment().subtract(getRandomNumber(2), 'year').subtract(getRandomNumber(24), 'hours').subtract(getRandomNumber(7), 'days').subtract(getRandomNumber(0), 'months').format(),
+    watchingDate: moment().subtract(getRandomNumber(2), `year`).subtract(getRandomNumber(24), `hours`).subtract(getRandomNumber(7), `days`).subtract(getRandomNumber(0), `months`).format(),
   };
 };
 export const generateMovieCards = (count) => {

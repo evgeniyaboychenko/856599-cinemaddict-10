@@ -34,11 +34,10 @@ generateCommentsForMovies(movieCards);
 const movieFilters = generateMovieFilters(movieCards);
 
 const siteHeaderElement = document.querySelector(`.header`);
-const profileUserComponent = new ProfileUserComponent(movieFilters[2].count)
+const profileUserComponent = new ProfileUserComponent(movieFilters[2].count);
 render(siteHeaderElement, profileUserComponent, RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector(`.main`);
-
 
 const moviesModel = new MoviesModel();
 moviesModel.setMovies(movieCards, movieIdToCommentsMap);

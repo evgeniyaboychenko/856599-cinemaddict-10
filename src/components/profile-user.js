@@ -4,8 +4,7 @@ import {getProfileRating} from '../utils/utils.js';
 // функция возвращающая Звание пользователя
 const createProfileUserTemplate = (countWatchedFilms) => {
   const profileRating = getProfileRating(countWatchedFilms);
-  console.log(countWatchedFilms);
-  if(profileRating) {
+  if (profileRating) {
     return (
       `<section class="header__profile profile">
         <p class="profile__rating">${profileRating}</p>

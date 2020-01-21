@@ -1,7 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
 import ChartDatalabels from 'chartjs-plugin-datalabels';
-import {generateMovieFilters} from '../mock/filters.js';
 import {getProfileRating} from '../utils/utils.js';
 import {FilterByDateForStatistic as FilterByDateForStatistic} from '../const.js';
 import moment from 'moment';
@@ -31,30 +30,30 @@ const getGenresWithCount = (watchedMovies) => {
   let genresWithCount = [];
   genres = genres.sort();
   let index = 0;
-  while(genres.length !== 0) {
+  while (genres.length !== 0) {
     let topGenre = genres[0];
     genresWithCount.push({
-     genre: topGenre,
-     count: genres.filter((i) => topGenre === i).length,
+      genre: topGenre,
+      count: genres.filter((i) => topGenre === i).length,
     }
     );
     genres.splice(0, genresWithCount[index].count);
-    index ++;
+    index++;
   }
-  genresWithCount.sort((a,b) => {
+  genresWithCount.sort((a, b) => {
     return (b.count - a.count);
   });
-    return genresWithCount;
+  return genresWithCount;
 };
 
 const getMoviesByDateRange = (movies, dateFrom, dateTo) => {
   return movies.filter((movie) => {
-    const watchingDate = movie.watching_date;
+    const watchingDate = movie.watchingDate;
     return watchingDate >= dateFrom && watchingDate <= dateTo;
   });
 };
 
- const getFiltredMoviesByDate = (movies, filterType) => {
+const getFiltredMoviesByDate = (movies, filterType) => {
   switch (filterType) {
     case FilterByDateForStatistic.ALL:
       return movies;
@@ -68,18 +67,78 @@ const getMoviesByDateRange = (movies, dateFrom, dateTo) => {
       return getMoviesByDateRange(movies, moment().subtract(1, `year`).format(), moment().format());
   }
   return movies;
-}
+};
+
+const getChartForStatistic = (genresCtx, labelsChart, countsChart) => {
+  Chart.defaults.global.defaultFontColor = `white`;
+  Chart.defaults.global.defaultFontSize = 20;
+  return new Chart(genresCtx, {
+    plugins: [ChartDatalabels],
+    type: `horizontalBar`,
+    data: {
+      labels: labelsChart,
+      datasets: [{
+        dataset: 10,
+        data: countsChart,
+        backgroundColor: `#ffe800`,
+        barThickness: 30,
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          display: true,
+          anchor: `start`,
+          align: `left`,
+          padding: {
+            left: 100,
+            right: 0,
+            top: 0,
+            bottom: 0
+          },
+        }
+      },
+      legend: {
+        display: false,
+      },
+      hover: false,
+      tooltips: {
+        enabled: false,
+      },
+      scales: {
+        yAxes: [{
+          gridLines: {
+            display: false
+          },
+          ticks: {
+            min: 0,
+            padding: 120,
+          },
+        }],
+        xAxes: [{
+          gridLines: {
+            display: false
+          },
+          ticks: {
+            min: 0,
+            display: false,
+          },
+        }],
+      },
+    },
+  });
+};
+
 // функция возвращающая блок, для стаистики
 const createStatisticTemplate = (moviesModel, selectedFilterDate) => {
   const watchedMovies = getWatchedMovies(moviesModel.getMoviesAll());
   const filteredMoviesByDate = getFiltredMoviesByDate(watchedMovies, selectedFilterDate);
-  console.log(filteredMoviesByDate);
   const countWatchedMoviesTotal = watchedMovies.length;
   const profileRating = getProfileRating(countWatchedMoviesTotal);
   const countWatchedMovies = filteredMoviesByDate.length;
   const totalDuration = getTotalDuration(filteredMoviesByDate);
-  const totalDurationInHours = Math.trunc(totalDuration/60);
-  const totalDurationInMinutes = moment.duration(totalDuration, "minutes").minutes();
+  const totalDurationInHours = Math.trunc(totalDuration / 60);
+  const totalDurationInMinutes = moment.duration(totalDuration, `minutes`).minutes();
   const genresWithCount = getGenresWithCount(filteredMoviesByDate);
   return (
     `<section class="statistic">
@@ -134,6 +193,7 @@ export default class Statistic extends AbstractSmartComponent {
   constructor(moviesModel) {
     super();
     this._moviesModel = moviesModel;
+    this._genresChart = null;
     this._renderCharts();
     this._selectedFilterDate = FilterByDateForStatistic.ALL;
 
@@ -149,7 +209,11 @@ export default class Statistic extends AbstractSmartComponent {
 
   hide() {
     super.hide();
-    this._selectedFilterDate = FilterByDateForStatistic.ALL
+    if (this._genresChart) {
+      this._genresChart.destroy();
+      this._genresChart = null;
+    }
+    this._selectedFilterDate = FilterByDateForStatistic.ALL;
   }
 
   recoveryListeners() {
@@ -175,6 +239,10 @@ export default class Statistic extends AbstractSmartComponent {
   rerender() {
     super.rerender();
     this.setActiveFilter(this._selectedFilterDate);
+    if (this._genresChart) {
+      this._genresChart.destroy();
+      this._genresChart = null;
+    }
     this._renderCharts();
   }
 
@@ -193,67 +261,74 @@ export default class Statistic extends AbstractSmartComponent {
       return;
     }
     let genresWithCount = getGenresWithCount(filterdMoviesByDate);
-    const labelsChart = genresWithCount.map((item) => {return item.genre;});
-    const countChart = genresWithCount.map((item) => {return item.count;});
-    Chart.defaults.global.defaultFontColor = 'white';
-    Chart.defaults.global.defaultFontSize = 20;
+    const labelsChart = genresWithCount.map((item) => {
+      return item.genre;
+    });
+    const countChart = genresWithCount.map((item) => {
+      return item.count;
+    });
+
     const element = this.getElement();
-    const daysCtx = element.querySelector(`.statistic__chart`);
-    new Chart(daysCtx, {
-      plugins: [ChartDatalabels],
-      type: `horizontalBar`,
-      data: {
-        labels: labelsChart,
-        datasets: [{
-          dataset: 10,
-          data: countChart,
-          backgroundColor: `#ffe800` ,
-          barThickness: 30,
-        }]
-      },
-      options: {
-        plugins: {
-          datalabels: {
-            display: true,
-            anchor: `start`,
-            align: `left`,
-            padding: {
-              left: 100,
-              right: 0,
-              top: 0,
-              bottom: 0
-            },
-          }
-        },
-        legend: {
-         display: false,
-        },
-        hover: false,
-        tooltips: {
-          enabled: false,
-        },
-        scales:{
-          yAxes: [{
-            gridLines: {
-              display: false
-            },
-            ticks: {
-              min: 0,
-              padding: 120,
-            },
-          }],
-          xAxes: [{
-            gridLines: {
-              display: false
-            },
-            ticks: {
-              min: 0,
-              display: false,
-            },
-          }],
-        },
-      },
+    const genresCtx = element.querySelector(`.statistic__chart`);
+    this._genresChart = getChartForStatistic(genresCtx, labelsChart, countChart);
+    // Chart.defaults.global.defaultFontColor = `white`;
+    // Chart.defaults.global.defaultFontSize = 20;
+    // const element = this.getElement();
+    // const daysCtx = element.querySelector(`.statistic__chart`);
+    // const ee = new Chart(daysCtx, {
+    //   plugins: [ChartDatalabels],
+    //   type: `horizontalBar`,
+    //   data: {
+    //     labels: labelsChart,
+    //     datasets: [{
+    //       dataset: 10,
+    //       data: countChart,
+    //       backgroundColor: `#ffe800`,
+    //       barThickness: 30,
+    //     }]
+    //   },
+    //   options: {
+    //     plugins: {
+    //       datalabels: {
+    //         display: true,
+    //         anchor: `start`,
+    //         align: `left`,
+    //         padding: {
+    //           left: 100,
+    //           right: 0,
+    //           top: 0,
+    //           bottom: 0
+    //         },
+    //       }
+    //     },
+    //     legend: {
+    //       display: false,
+    //     },
+    //     hover: false,
+    //     tooltips: {
+    //       enabled: false,
+    //     },
+    //     scales: {
+    //       yAxes: [{
+    //         gridLines: {
+    //           display: false
+    //         },
+    //         ticks: {
+    //           min: 0,
+    //           padding: 120,
+    //         },
+    //       }],
+    //       xAxes: [{
+    //         gridLines: {
+    //           display: false
+    //         },
+    //         ticks: {
+    //           min: 0,
+    //           display: false,
+    //         },
+    //       }],
+    //     },
+    //   },
+    // });
   }
-);
-}
 }

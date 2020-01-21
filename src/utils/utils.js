@@ -42,7 +42,7 @@ export const getProfileRating = (countWatchedFilms) => {
 };
 
 export const getDurationMovie = (time) => {
-  const timeInHours = moment.duration(time, "minutes").hours();
-  const timeInMinutes = moment.duration(time, "minutes").minutes();
-  return timeInHours !==0 ? `${timeInHours}h ${timeInMinutes}m`: `${timeInMinutes}m`;
+  const timeInHours = moment.duration(time, `minutes`).hours();
+  const timeInMinutes = moment.duration(time, `minutes`).minutes();
+  return timeInHours !== 0 ? `${timeInHours}h ${timeInMinutes}m` : `${timeInMinutes}m`;
 };

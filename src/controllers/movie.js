@@ -41,7 +41,6 @@ export default class MovieController {
       removeComponent(this._aboutFilmPopupComponent);
       addListenerCardClick();
       this._isOpenPopup = false;
-      this._aboutFilmPopupComponent.resetCurrentComment();
     };
 
     const onWatchlistButtonClick = (evt) => {
@@ -50,13 +49,12 @@ export default class MovieController {
       newCard.isWatchlist = !newCard.isWatchlist;
       this._onDataChange(this, card, newCard, FilterType.WATCHLIST);
     };
-
     const onWatchedButtonClick = (evt) => {
       evt.preventDefault();
       let newCard = Object.assign({}, card);
       newCard.isHistory = !newCard.isHistory;
       newCard.userRating = 0;
-      newCard.watching_date = moment().format();
+      newCard.watchingDate = moment().format();
       this._onDataChange(this, card, newCard, FilterType.HISTORY);
     };
 
@@ -69,7 +67,6 @@ export default class MovieController {
 
     const onUserRatingButtonClick = (userRating) => {
       let newCard = Object.assign({}, card);
-      
       newCard.userRating = userRating;
       this._onDataChange(this, card, newCard);
     };
@@ -88,11 +85,10 @@ export default class MovieController {
     this._aboutFilmPopupComponent = new AboutFilmPopupComponent(card, comments);
     this._filmCardComponent = new FilmCardComponent(card);
 
-
     if (oldAboutFilmPopupComponent && oldFilmCardComponent) {
       replace(this._filmCardComponent, oldFilmCardComponent);
       if (replace(this._aboutFilmPopupComponent, oldAboutFilmPopupComponent)) {
-        this._aboutFilmPopupComponent.recoveryListeners();
+        this._aboutFilmPopupComponent.addEmojiHandler();
         this._aboutFilmPopupComponent.setCloseButtonClickHandler(onCloseButtonClick);
 
         this._aboutFilmPopupComponent.setWatchlistButtonClickHandler(onWatchlistButtonClick);
@@ -116,11 +112,12 @@ export default class MovieController {
 
       this._onViewChange();
       // показать попап
+      this._aboutFilmPopupComponent.resetState();
       render(siteBody, this._aboutFilmPopupComponent, RenderPosition.BEFOREEND);
       this._isOpenPopup = true;
 
       document.addEventListener(`keydown`, onPopupEscPress);
-      this._aboutFilmPopupComponent.recoveryListeners();
+      this._aboutFilmPopupComponent.addEmojiHandler();
 
       this._aboutFilmPopupComponent.setCloseButtonClickHandler(onCloseButtonClick);
 

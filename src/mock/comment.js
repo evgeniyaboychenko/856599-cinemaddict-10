@@ -33,4 +33,3 @@ const generateMovieComment = () => {
 export const generateComments = () => {
   return getObjectsArray(generateMovieComment, getRandomNumber(10));
 };
-console.log(emoji);

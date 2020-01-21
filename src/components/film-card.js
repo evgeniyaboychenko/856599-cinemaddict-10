@@ -8,12 +8,6 @@ const cropText = (text) => {
   return text.length > COMMENTS_LENGTH ? `${text.substr(0, COMMENTS_LENGTH - 1)}...` : text;
 };
 
-// const getDurationMovie = (time) => {
-//   const timeInHours = moment.duration(time, "minutes").hours();
-//   const timeInMinutes = moment.duration(time, "minutes").minutes();
-//   return timeInHours !==0 ? `${timeInHours}h ${timeInMinutes}m`: `${timeInMinutes}m`;
-// };
-
 const createFilmCardTemplate = (film) => {
   const {comments, posters, title, description, rating, releaseDate, runtime, genres, isWatchlist, isHistory, isFavorites} = film;
   const shortDescription = cropText(description);

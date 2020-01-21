@@ -1,4 +1,3 @@
-import {MONTHS} from '../const.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {generateDateComment, getDateComment} from '../mock/comment.js';
 const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
@@ -55,13 +54,6 @@ const createUserRatingMarkup = (userRating) => {
   return r.join(`\n`);
 };
 
-const generateDateRelease = (date) => {
-  const year = date.getFullYear();
-  const month = MONTHS[date.getMonth()];
-  const number = date.getDate();
-  return `${number} ${month} ${year}`;
-};
-
 const determineEndingWordGenre = (number) => {
   return number > 1 ? EndingWordGenre.MULTIPLE : EndingWordGenre.ZERO;
 };
@@ -77,22 +69,6 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
 
   const getCheckedInput = (emoji) => {
     return selectedEmoji === emoji ? `checked` : ``;
-  };
-
-  const getImageEmoji = (countComments) => {
-    if (countComments === 0 && selectedEmoji === null) {
-      selectedEmoji = EmojiType.SMILE;
-      return `<img src="images/emoji/${EmojiType.SMILE}.png" width="55" height="55" alt="emoji">`;
-    } else {
-      if (countComments === 0 && selectedEmoji) {
-        return `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji">`;
-      } else {
-        if (countComments && selectedEmoji === null) {
-          return ``;
-        }
-      }
-      return `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji">`;
-    }
   };
 
   return (
@@ -208,11 +184,11 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
 
             <div class="film-details__new-comment">
               <div for="add-emoji" class="film-details__add-emoji-label">
-              ${getImageEmoji(comments.length)}
+              ${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji">` : ``}
               </div>
 
               <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder=${comments.length > 0 ? `"Select reaction below and write comment here"` : `"Great movie!"`}  name="comment">${textComment ? textComment : ``}</textarea>
+                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here"  name="comment">${textComment ? textComment : ``}</textarea>
               </label>
 
               <div class="film-details__emoji-list">
@@ -250,13 +226,10 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._film = film;
     this._comments = comments;
     this._textComment = null;
-    this._currentEmoji = this._getDefaultEmoji();
+    this._currentEmoji = null;
     this._currentUserRating = 0;
   }
 
-  _getDefaultEmoji() {
-    return this._comments.length === 0 ? EmojiType.SMILE : null;
-  }
   recoveryListeners() {
     this._subscribeOnEvents();
   }
@@ -272,20 +245,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
-
-      if (evt.target.tagName !== `INPUT`) {
-        return;
-      }
-
-      const emojiType = evt.target.dataset.emojiType;
-
-      if (this._currentEmoji === emojiType) {
-        return;
-      }
-
-      this._onEmojiUpdate(emojiType);
-    });
+    this.addEmojiHandler();
 
     if (this._onCloseButtonClick) {
       this.setCloseButtonListener(this._onCloseButtonClick);
@@ -318,7 +278,11 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     return createAboutFilmPopupTemplate(this._film, this._comments, this._currentEmoji, this._textComment);
   }
 
-  resetCurrentComment() {
+  addEmojiHandler() {
+    this._addEmojiClickListener();
+  }
+
+  resetState() {
     this._currentEmoji = null;
     this._textComment = null;
   }
@@ -362,18 +326,14 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
   setUserRatingButtonListener(onUserRatingButtonClick) {
     if (this.getElement().querySelector(`.film-details__user-rating-score`)) {
       this.getElement().querySelector(`.film-details__user-rating-score`).addEventListener(`click`, (evt) => {
-
         if (evt.target.tagName !== `INPUT`) {
           return;
         }
-
         const userRating = evt.target.value;
-
         if (this._currentUserRating === userRating) {
           return;
         }
         this._currentUserRating = userRating;
-
         onUserRatingButtonClick(this._currentUserRating);
       });
     }
@@ -383,7 +343,6 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._onUserRatingButtonClick = handler;
     this.setUserRatingButtonListener(this._onUserRatingButtonClick);
   }
-
 
   setCommentDeleteButtonListener(onCommentDeleteButtonClick) {
     this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
@@ -420,5 +379,19 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
   setCommentAddHandler(handler) {
     this._onCommentAdd = handler;
     this.setCommentAddListener(this._onCommentAdd);
+  }
+
+  _addEmojiClickListener() {
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
+
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+      const emojiType = evt.target.dataset.emojiType;
+      if (this._currentEmoji === emojiType) {
+        return;
+      }
+      this._onEmojiUpdate(emojiType);
+    });
   }
 }
