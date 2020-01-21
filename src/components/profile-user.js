@@ -21,7 +21,6 @@ export default class ProfileUser extends AbstractComponent {
     super();
     this._countWatchedFilms = countWatchedFilms;
   }
-
   getTemplate() {
     return createProfileUserTemplate(this._countWatchedFilms);
   }

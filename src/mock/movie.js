@@ -3,6 +3,7 @@ import {getRandomRange} from '../utils/utils.js';
 import {generateRandomArray} from '../utils/utils.js';
 import {generateFlagValue} from '../utils/utils.js';
 import {getObjectsArray} from '../utils/utils.js';
+import moment from 'moment';
 
 
 const MOVIE_TITLES = [`Frozen II`, `The Shawshank Redemption`, `Forrest Gump`, `The Matrix`, `The Matrix`, `The Lord of the Rings: The Fellowship of the Ring`, `Pulp Fiction`, `The Silence of the Lambs`, `Saving Private Ryan`, `Gladiator`, `Se7en`];
@@ -75,11 +76,11 @@ export const generateMovieCard = () => {
     genres: generateRandomArray(GENRES, getRandomRange(1, 4)),
     ageLimit: AGE_LIMITS[getRandomNumber(AGE_LIMITS.length)],
     isWatchlist: generateFlagValue(),
-    isHistory: generateFlagValue(),
+    isHistory: false,//generateFlagValue(),
     isFavorites: generateFlagValue(),
+    watching_date: moment().subtract(getRandomNumber(2), 'year').subtract(getRandomNumber(24), 'hours').subtract(getRandomNumber(7), 'days').subtract(getRandomNumber(0), 'months').format(),
   };
 };
-
 export const generateMovieCards = (count) => {
   return getObjectsArray(generateMovieCard, count);
 };

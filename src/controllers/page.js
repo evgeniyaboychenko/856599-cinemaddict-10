@@ -116,7 +116,6 @@ export default class PageController {
     this._removeMovies();
     this._renderCard(getCardShowing(this._getSortMovies(this._currenSortType, this._moviesModel.getMovies()), 0, CARD_COUNT), this._siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange, this._onCommentDataChange);
     this._renderShowMoreButton();
-
     this._currentFilter = filter;
   }
 

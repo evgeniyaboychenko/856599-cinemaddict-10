@@ -57,11 +57,9 @@ const onMenuChanged = (isActiveStats) => {
   if (isActiveStats) {
     statisticComponent.show();
     pageController.hide();
-    console.log(`меню Stats`);
   } else {
     statisticComponent.hide();
     pageController.show();
-   console.log(`меню filtr`);
   }
 };
 

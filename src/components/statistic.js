@@ -3,6 +3,7 @@ import Chart from 'chart.js';
 import ChartDatalabels from 'chartjs-plugin-datalabels';
 import {generateMovieFilters} from '../mock/filters.js';
 import {getProfileRating} from '../utils/utils.js';
+import {FilterByDateForStatistic as FilterByDateForStatistic} from '../const.js';
 import moment from 'moment';
 
 const getWatchedMovies = (movies) => {
@@ -46,15 +47,40 @@ const getGenresWithCount = (watchedMovies) => {
     return genresWithCount;
 };
 
+const getMoviesByDateRange = (movies, dateFrom, dateTo) => {
+  return movies.filter((movie) => {
+    const watchingDate = movie.watching_date;
+    return watchingDate >= dateFrom && watchingDate <= dateTo;
+  });
+};
+
+ const getFiltredMoviesByDate = (movies, filterType) => {
+  switch (filterType) {
+    case FilterByDateForStatistic.ALL:
+      return movies;
+    case FilterByDateForStatistic.TODAY:
+      return getMoviesByDateRange(movies, moment().hours(0).minutes(0).seconds(0).format(), moment().format());
+    case FilterByDateForStatistic.WEEK:
+      return getMoviesByDateRange(movies, moment().subtract(7, `days`).format(), moment().format());
+    case FilterByDateForStatistic.MONTH:
+      return getMoviesByDateRange(movies, moment().subtract(1, `month`).format(), moment().format());
+    case FilterByDateForStatistic.YEAR:
+      return getMoviesByDateRange(movies, moment().subtract(1, `year`).format(), moment().format());
+  }
+  return movies;
+}
 // функция возвращающая блок, для стаистики
-const createStatisticTemplate = (moviesModel) => {
-  const movies = moviesModel.getMoviesAll();
-  const countWatchedMovies = getWatchedMovies(movies).length;
-  const profileRating = getProfileRating(countWatchedMovies);
-  const totalDuration = getTotalDuration(getWatchedMovies(movies));
-  const totalDurationInHours = moment.duration(totalDuration, "minutes").hours();
+const createStatisticTemplate = (moviesModel, selectedFilterDate) => {
+  const watchedMovies = getWatchedMovies(moviesModel.getMoviesAll());
+  const filteredMoviesByDate = getFiltredMoviesByDate(watchedMovies, selectedFilterDate);
+  console.log(filteredMoviesByDate);
+  const countWatchedMoviesTotal = watchedMovies.length;
+  const profileRating = getProfileRating(countWatchedMoviesTotal);
+  const countWatchedMovies = filteredMoviesByDate.length;
+  const totalDuration = getTotalDuration(filteredMoviesByDate);
+  const totalDurationInHours = Math.trunc(totalDuration/60);
   const totalDurationInMinutes = moment.duration(totalDuration, "minutes").minutes();
-  const genresWithCount = getGenresWithCount(getWatchedMovies(movies));
+  const genresWithCount = getGenresWithCount(filteredMoviesByDate);
   return (
     `<section class="statistic">
       ${profileRating ?
@@ -93,7 +119,7 @@ const createStatisticTemplate = (moviesModel) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">${genresWithCount[0].genre}</p>
+          <p class="statistic__item-text">${countWatchedMovies ? genresWithCount[0].genre : `-`}</p>
         </li>
       </ul>
 
@@ -109,14 +135,64 @@ export default class Statistic extends AbstractSmartComponent {
     super();
     this._moviesModel = moviesModel;
     this._renderCharts();
+    this._selectedFilterDate = FilterByDateForStatistic.ALL;
+
   }
   getTemplate() {
-    return createStatisticTemplate(this._moviesModel);
+    return createStatisticTemplate(this._moviesModel, this._selectedFilterDate);
+  }
+
+  show() {
+    super.show();
+    this.rerender();
+  }
+
+  hide() {
+    super.hide();
+    this._selectedFilterDate = FilterByDateForStatistic.ALL
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
+  }
+
+  _onChangeFilterDate(selectedFilterDate) {
+    this._selectedFilterDate = selectedFilterDate;
+    this.rerender();
+  }
+
+  _subscribeOnEvents() {
+    // события окна
+    this.getElement().addEventListener(`change`, (evt) => {
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+      this._selectedFilterDate = evt.target.id;
+      this._onChangeFilterDate(this._selectedFilterDate);
+    });
+  }
+
+  rerender() {
+    super.rerender();
+    this.setActiveFilter(this._selectedFilterDate);
+    this._renderCharts();
+  }
+
+  setActiveFilter(selectedFilterDate) {
+    const item = this.getElement().querySelector(`#${selectedFilterDate}`);
+    if (item) {
+      item.checked = true;
+    }
   }
 
   _renderCharts() {
     const movies = this._moviesModel.getMoviesAll();
-    const genresWithCount = getGenresWithCount(getWatchedMovies(movies));
+    const watchedMovies = getWatchedMovies(movies);
+    const filterdMoviesByDate = getFiltredMoviesByDate(watchedMovies, this._selectedFilterDate);
+    if (!filterdMoviesByDate.length) {
+      return;
+    }
+    let genresWithCount = getGenresWithCount(filterdMoviesByDate);
     const labelsChart = genresWithCount.map((item) => {return item.genre;});
     const countChart = genresWithCount.map((item) => {return item.count;});
     Chart.defaults.global.defaultFontColor = 'white';
@@ -158,16 +234,21 @@ export default class Statistic extends AbstractSmartComponent {
         },
         scales:{
           yAxes: [{
+            gridLines: {
+              display: false
+            },
             ticks: {
               min: 0,
               padding: 120,
             },
           }],
           xAxes: [{
+            gridLines: {
+              display: false
+            },
             ticks: {
               min: 0,
-              // display: false,
-              fontColor: `#ffffff`
+              display: false,
             },
           }],
         },

@@ -1,10 +1,9 @@
 import FilmCardComponent from '../components/film-card.js';
 import AboutFilmPopupComponent from '../components/about-film.js';
-const siteBody = document.querySelector(`body`);
 import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
-
 import {FilterType} from '../const.js';
-
+import moment from 'moment';
+const siteBody = document.querySelector(`body`);
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, onDataCommentChange) {
     this._container = container;
@@ -57,6 +56,7 @@ export default class MovieController {
       let newCard = Object.assign({}, card);
       newCard.isHistory = !newCard.isHistory;
       newCard.userRating = 0;
+      newCard.watching_date = moment().format();
       this._onDataChange(this, card, newCard, FilterType.HISTORY);
     };
 

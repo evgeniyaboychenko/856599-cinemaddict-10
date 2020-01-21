@@ -27,6 +27,14 @@ export const FilterType = {
   FAVORITES: `Favorites`
 };
 
+export const FilterByDateForStatistic = {
+  ALL: `statistic-all-time`,
+  TODAY: `statistic-today`,
+  WEEK: `statistic-week`,
+  MONTH: `statistic-month`,
+  YEAR: `statistic-year`
+};
+
 // export const FilterType = {
 //   ALL: `All movies`,
 //   WATCHLIST: `Watchlist`,
