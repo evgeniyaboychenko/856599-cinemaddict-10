@@ -24,6 +24,15 @@ export const FilterType = {
   HISTORY: `History`,
   FAVORITES: `Favorites`
 };
+
+export const FilterByDateForStatistic = {
+  ALL: `statistic-all-time`,
+  TODAY: `statistic-today`,
+  WEEK: `statistic-week`,
+  MONTH: `statistic-month`,
+  YEAR: `statistic-year`
+};
+
 export const EmojiType = {
   SMILE: `smile`,
   SLEEPING: `sleeping`,

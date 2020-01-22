@@ -1,6 +1,14 @@
 import AbstractComponent from './abstract-component.js';
 import {FilterType} from '../const.js';
 
+// export const MenuItem = {
+//   ALL_MOVIES: `control__new-task`,
+//   WATCHLIST:
+//   HISTORY:
+//   FAVORITES:
+//   STATS: `control__statistic`,
+// };
+
 
 const createFilterMarkup = (filter) => {
   const {name, count} = filter;
@@ -13,7 +21,7 @@ const createMainNavigationTemplate = (filters) => {
   return (
     `<nav class="main-navigation">
 ${filterMarkup}
-    <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
+    <a href="#stats" data-filter-type="Stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
   </nav>`
   );
 };
@@ -47,9 +55,10 @@ export default class MainNavigation extends AbstractComponent {
         return;
       }
 
-      if (evt.target.classList.contains(`main-navigation__item--additional`)) {
-        return;
-      }
+      // if (evt.target.classList.contains(`main-navigation__item--additional`)) {
+
+      //   return;
+      // }
 
       const filterType = evt.target.dataset.filterType;
 

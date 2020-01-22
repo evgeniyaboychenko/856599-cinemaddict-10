@@ -1,4 +1,5 @@
 import ProfileUserComponent from './components/profile-user.js';
+import StatisticComponent from './components/statistic.js';
 
 import {generateMovieCards} from './mock/movie.js';
 import {generateComments} from './mock/comment.js';
@@ -10,7 +11,6 @@ import {MOVIE_COUNT} from './const.js';
 import {render, RenderPosition} from './utils/render.js';
 import PageController from './controllers/page.js';
 import FilterController from './controllers/filter.js';
-
 import MoviesModel from './models/movies.js';
 
 const getIdComments = (comments) => {
@@ -34,7 +34,8 @@ generateCommentsForMovies(movieCards);
 const movieFilters = generateMovieFilters(movieCards);
 
 const siteHeaderElement = document.querySelector(`.header`);
-render(siteHeaderElement, new ProfileUserComponent(movieFilters[1].count), RenderPosition.BEFOREEND);
+const profileUserComponent = new ProfileUserComponent(movieFilters[2].count);
+render(siteHeaderElement, profileUserComponent, RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector(`.main`);
 
@@ -46,6 +47,22 @@ filterController.render();
 
 const pageController = new PageController(siteMainElement, moviesModel);
 pageController.render();
+
+const statisticComponent = new StatisticComponent(moviesModel);
+render(siteMainElement, statisticComponent, RenderPosition.BEFOREEND);
+statisticComponent.hide();
+
+const onMenuChanged = (isActiveStats) => {
+  if (isActiveStats) {
+    statisticComponent.show();
+    pageController.hide();
+  } else {
+    statisticComponent.hide();
+    pageController.show();
+  }
+};
+
+filterController.setOnMenuChanged(onMenuChanged);
 
 // показать кол-во фильмов в футере
 const siteFooterStatisticsElement = document.querySelector(`.footer__statistics`);

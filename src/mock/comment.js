@@ -3,7 +3,7 @@ import {getObjectsArray} from '../utils/utils.js';
 
 export const PEOPLE_NAMES = [`Rachel Matthews`, `Alan Tudyk`, `Hadley Gannaway`, `Kristen Bell`, `Frank Darabont`, `Stephen King`, `Tim Robbins`, `Morgan Freeman`, `Bob Gunton`, `Tom Hanks`, `Robin Wright`, `Gary Sinise`];
 import {EmojiType} from '../const.js';
-const emoji = Object.keys(EmojiType);
+const emoji = Object.values(EmojiType);
 const COMMENTS_TEXT = [`Interesting setting and a good cast`, `Booooooooooring`, `Very very old. Meh`, `Almost two hours? Seriously?`];
 
 export const generateDateComment = () => {

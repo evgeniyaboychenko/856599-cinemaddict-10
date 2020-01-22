@@ -94,6 +94,17 @@ export default class PageController {
     this._currenSortType = SortType.DEFAULT;
   }
 
+  show() {
+    this._listFilmCardsComponent.show();
+    this._sortFilmComponent.show();
+  }
+
+  hide() {
+    this._listFilmCardsComponent.hide();
+    this._sortFilmComponent.hide();
+  }
+
+
   _removeMovies() {
     this._movieControllers.forEach((movieController) => movieController.destroy());
     this._movieControllers = [];
@@ -105,7 +116,6 @@ export default class PageController {
     this._removeMovies();
     this._renderCard(getCardShowing(this._getSortMovies(this._currenSortType, this._moviesModel.getMovies()), 0, CARD_COUNT), this._siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange, this._onCommentDataChange);
     this._renderShowMoreButton();
-
     this._currentFilter = filter;
   }
 
@@ -144,7 +154,7 @@ export default class PageController {
     if (!newComment) {
       const isSuccess = this._moviesModel.removeComment(idCard, oldIdComment);
       if (isSuccess) {
-        const newData = this._moviesModel.getMovies().find((item) => item.id === idCard);
+        const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
         movieController.render(newData, this._moviesModel.getComments(newData.id));
         sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
         this._renderMostCommentedMovie();
@@ -152,7 +162,7 @@ export default class PageController {
     } else {
       const isSuccess = this._moviesModel.addComment(idCard, newComment);
       if (isSuccess) {
-        const newData = this._moviesModel.getMovies().find((item) => item.id === idCard);
+        const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
         movieController.render(newData, this._moviesModel.getComments(newData.id));
         sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
         this._renderMostCommentedMovie();
@@ -192,6 +202,10 @@ export default class PageController {
     if (isSuccess) {
       movieController.render(newData, this._moviesModel.getComments(newData.id));
       sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
+      // если пользователь поставил\снял оценку фильма
+      if (oldData.rating !== newData.rating) {
+        this._renderTopRatedMovie();
+      }
     }
 
     // снимаем фильтр у карточки в соответствующем списке фильтра
@@ -228,17 +242,23 @@ export default class PageController {
     this._siteFilmsListContainerElements[1].innerHTML = ``;
     if (isTopRatedMovieShowing(movies, `rating`)) {
       this._renderCardTop(getTopRatedMovie(movies, `rating`), this._siteFilmsListContainerElements[1], this._onDataChange, this._onViewChange, this._onCommentDataChange);
+      if (siteFilmListContainerExtraElements[0].classList.contains(`visually-hidden`)) {
+        siteFilmListContainerExtraElements[0].classList.remove(`visually-hidden`);
+      }
     } else {
       siteFilmListContainerExtraElements[0].classList.add(`visually-hidden`);
     }
   }
 
   _renderMostCommentedMovie() {
-    const movies = this._getSortMovies(this._currenSortType, this._moviesModel.getMovies());
+    const movies = this._getSortMovies(this._currenSortType, this._moviesModel.getMoviesAll());
     const siteFilmListContainerExtraElements = this._listFilmCardsComponent.getElement().querySelectorAll(`.films-list--extra`);
     this._siteFilmsListContainerElements[2].innerHTML = ``;
     if (isTopCommentedMovieShowing(movies, `comments`)) {
       this._renderCardTop(getTopCommentedMovie(movies, `comments`), this._siteFilmsListContainerElements[2], this._onDataChange, this._onViewChange, this._onCommentDataChange);
+      if (siteFilmListContainerExtraElements[1].classList.contains(`visually-hidden`)) {
+        siteFilmListContainerExtraElements[1].classList.remove(`visually-hidden`);
+      }
     } else {
       siteFilmListContainerExtraElements[1].classList.add(`visually-hidden`);
     }
