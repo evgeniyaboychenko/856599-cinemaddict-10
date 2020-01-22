@@ -350,14 +350,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
 
   setUndoButtonListener(onUndoButtonClick) {
     if (this.getElement().querySelector(`.film-details__watched-reset`)) {
-      this.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, (evt) => {
-        // if (evt.target.tagName !== `INPUT`) {
-        //   return;
-        // }
-        // const userRating = evt.target.value;
-        // if (this._currentUserRating === userRating) {
-        //   return;
-        // }
+      this.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, () => {
         this._currentUserRating = 0;
         onUndoButtonClick(this._currentUserRating);
       });
