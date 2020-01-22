@@ -265,6 +265,10 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       this.setUserRatingButtonListener(this._onUserRatingButtonClick);
     }
 
+    if (this._onUndoButtonClick) {
+      this.setUndoButtonListener(this._onUndoButtonClick);
+    }
+
     if (this._onCommentDeleteButtonClick) {
       this.setCommentDeleteButtonListener(this._onCommentDeleteButtonClick);
     }
@@ -343,6 +347,28 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._onUserRatingButtonClick = handler;
     this.setUserRatingButtonListener(this._onUserRatingButtonClick);
   }
+
+  setUndoButtonListener(onUndoButtonClick) {
+    if (this.getElement().querySelector(`.film-details__watched-reset`)) {
+      this.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, (evt) => {
+        // if (evt.target.tagName !== `INPUT`) {
+        //   return;
+        // }
+        // const userRating = evt.target.value;
+        // if (this._currentUserRating === userRating) {
+        //   return;
+        // }
+        this._currentUserRating = 0;
+        onUndoButtonClick(this._currentUserRating);
+      });
+    }
+  }
+
+  setUndoButtonClickHandler(handler) {
+    this._onUndoButtonClick = handler;
+    this.setUndoButtonListener(this._onUndoButtonClick);
+  }
+
 
   setCommentDeleteButtonListener(onCommentDeleteButtonClick) {
     this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {

@@ -99,6 +99,7 @@ export default class MovieController {
         this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
 
         this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
+        this._aboutFilmPopupComponent.setUndoButtonClickHandler(onUserRatingButtonClick);
       }
     } else {
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
@@ -129,6 +130,7 @@ export default class MovieController {
       this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
 
       this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
+      this._aboutFilmPopupComponent.setUndoButtonClickHandler(onUserRatingButtonClick);
     };
 
     addListenerCardClick();
