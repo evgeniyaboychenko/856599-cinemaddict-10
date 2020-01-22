@@ -202,6 +202,10 @@ export default class PageController {
     if (isSuccess) {
       movieController.render(newData, this._moviesModel.getComments(newData.id));
       sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
+      // если пользователь поставил\снял оценку фильма
+      if (oldData.rating !== newData.rating) {
+        this._renderTopRatedMovie();
+      }
     }
 
     // снимаем фильтр у карточки в соответствующем списке фильтра
