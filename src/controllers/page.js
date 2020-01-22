@@ -65,9 +65,10 @@ const getCardShowing = (cards, start, count) => {
 };
 
 export default class PageController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, api) {
     this._container = container;
     this._moviesModel = moviesModel;
+    this._api = api;
 
     this._onFilterChange = this._onFilterChange.bind(this);
     this._moviesModel.setFilterChangedHandler(this._onFilterChange);
