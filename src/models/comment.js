@@ -9,11 +9,11 @@ export default class Comment {
 
   toRAW() {
     return {
-        'id': this.id,
-        'author': this.autorComment,
-        'comment': this.textComment,
-        'date': this.dateComment,
-        'emotion': this.emoji
+      'id': this.id,
+      'author': this.autorComment,
+      'comment': this.textComment,
+      'date': this.dateComment,
+      'emotion': this.emoji
     };
   }
 

@@ -15,7 +15,7 @@ const showProfileUser = (moviesModel) => {
   const siteHeaderElement = document.querySelector(`.header`);
   const profileUserComponent = new ProfileUserComponent(moviesModel);
   render(siteHeaderElement, profileUserComponent, RenderPosition.BEFOREEND);
-}
+};
 
 const siteMainElement = document.querySelector(`.main`);
 
@@ -28,7 +28,7 @@ const statisticComponent = new StatisticComponent(moviesModel);
 const showCountMovies = (movies) => {
   const siteFooterStatisticsElement = document.querySelector(`.footer__statistics`);
   siteFooterStatisticsElement.querySelector(`p`).textContent = `${movies.length} movies inside`;
-}
+};
 
 api.getMovies()
   .then((movies) => {
@@ -41,14 +41,14 @@ api.getMovies()
     showCountMovies(movies);
   });
 
-  const onMenuChanged = (isActiveStats) => {
-    if (isActiveStats) {
-      statisticComponent.show();
-      pageController.hide();
-    } else {
-      statisticComponent.hide();
-      pageController.show();
-    }
-  };
+const onMenuChanged = (isActiveStats) => {
+  if (isActiveStats) {
+    statisticComponent.show();
+    pageController.hide();
+  } else {
+    statisticComponent.hide();
+    pageController.show();
+  }
+};
 
-  filterController.setOnMenuChanged(onMenuChanged);
+filterController.setOnMenuChanged(onMenuChanged);

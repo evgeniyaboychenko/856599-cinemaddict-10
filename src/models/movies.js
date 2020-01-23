@@ -31,7 +31,7 @@ const getMatchByFilter = (movie, filter) => {
 
 let movieIdToCommentsMap = new Map();
 const setMovieIdToComments = (movieId, movieComments) => {
-    return movieIdToCommentsMap.set(movieId, movieComments);
+  return movieIdToCommentsMap.set(movieId, movieComments);
 };
 
 export default class Movies {
@@ -61,12 +61,10 @@ export default class Movies {
 
   setMovies(movies) {
     this._movies = Array.from(movies);
-    // this._comments = comments;
   }
 
   setComments(movieId, comments) {
     this._comments = setMovieIdToComments(movieId, comments);
-    //this._comments = comments;
   }
 
   setFilter(currentFilter) {

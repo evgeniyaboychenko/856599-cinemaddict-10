@@ -204,8 +204,8 @@ export default class PageController {
 
     this._api.updateMovie(oldData.id, newData)
     .then((movieModel) => {
-      const isSuccess = this._moviesModel.updateMovies(oldData.id, movieModel );
-      if (isSuccess) {movieModel
+      const isSuccess = this._moviesModel.updateMovies(oldData.id, movieModel);
+      if (isSuccess) {
         movieController.render(movieModel, this._moviesModel.getComments(movieModel.id));
         sameMovieControllers.forEach((controller) => controller.render(movieModel, this._moviesModel.getComments(movieModel.id)));
         // если пользователь поставил\снял оценку фильма
@@ -214,23 +214,23 @@ export default class PageController {
         }
       }
       // снимаем фильтр у карточки в соответствующем списке фильтра
-    if (this._moviesModel.matchCurrentFilter(oldData) !== this._moviesModel.matchCurrentFilter(movieModel)) {
-      if (this._moviesModel.matchCurrentFilter(oldData)) {
-        const showedCardsCount = this._movieControllers.length;
-        this._removeMovies();
-        this._renderCard(getCardShowing(this._getSortMovies(this._currenSortType, this._moviesModel.getMovies()), 0, showedCardsCount), this._siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange, this._onCommentDataChange);
-        this._renderShowMoreButton();
-      } else {
-        const showedCardsCount = this._movieControllers.length;
-        this._removeMovies();
-        if (showedCardsCount === allCardCount) {
-          this._renderCard(getCardShowing(this._getSortMovies(this._currenSortType, this._moviesModel.getMovies()), 0, showedCardsCount + 1), this._siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange, this._onCommentDataChange);
-        } else {
+      if (this._moviesModel.matchCurrentFilter(oldData) !== this._moviesModel.matchCurrentFilter(movieModel)) {
+        if (this._moviesModel.matchCurrentFilter(oldData)) {
+          const showedCardsCount = this._movieControllers.length;
+          this._removeMovies();
           this._renderCard(getCardShowing(this._getSortMovies(this._currenSortType, this._moviesModel.getMovies()), 0, showedCardsCount), this._siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange, this._onCommentDataChange);
+          this._renderShowMoreButton();
+        } else {
+          const showedCardsCount = this._movieControllers.length;
+          this._removeMovies();
+          if (showedCardsCount === allCardCount) {
+            this._renderCard(getCardShowing(this._getSortMovies(this._currenSortType, this._moviesModel.getMovies()), 0, showedCardsCount + 1), this._siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange, this._onCommentDataChange);
+          } else {
+            this._renderCard(getCardShowing(this._getSortMovies(this._currenSortType, this._moviesModel.getMovies()), 0, showedCardsCount), this._siteFilmsListContainerElements[0], this._onDataChange, this._onViewChange, this._onCommentDataChange);
+          }
+          this._renderShowMoreButton();
         }
-        this._renderShowMoreButton();
       }
-    }
     });
   }
 
@@ -238,12 +238,12 @@ export default class PageController {
     cards.forEach((card) => {
       const movieController = new MovieController(container, onDataChange, onViewChange, onDataCommentChange);
 
-    // загрузка комментариев с сервера
-    this._api.getComments(card.id)
-    .then((commentsForMovie) => {
-      this._moviesModel.setComments(card.id, commentsForMovie);
-      movieController.render(card, this._moviesModel.getComments(card.id));
-    });
+      // загрузка комментариев с сервера
+      this._api.getComments(card.id)
+      .then((commentsForMovie) => {
+        this._moviesModel.setComments(card.id, commentsForMovie);
+        movieController.render(card, this._moviesModel.getComments(card.id));
+      });
       this._movieControllers.push(movieController);
     });
   }
@@ -279,12 +279,12 @@ export default class PageController {
   _renderCardTop(cards, container, onDataChange, onViewChange, onDataCommentChange) {
     cards.forEach((card) => {
       const movieController = new MovieController(container, onDataChange, onViewChange, onDataCommentChange);
-          // загрузка комментариев с сервера
-    this._api.getComments(card.id)
-    .then((commentsForMovie) => {
-      this._moviesModel.setComments(card.id, commentsForMovie);
-      movieController.render(card, this._moviesModel.getComments(card.id));
-    });
+      // загрузка комментариев с сервера
+      this._api.getComments(card.id)
+      .then((commentsForMovie) => {
+        this._moviesModel.setComments(card.id, commentsForMovie);
+        movieController.render(card, this._moviesModel.getComments(card.id));
+      });
       this._topMoviesModel.push(card);
       this._movieTopControllers.push(movieController);
     });

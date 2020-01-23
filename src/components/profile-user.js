@@ -4,7 +4,7 @@ import {getProfileRating} from '../utils/utils.js';
 const getCounWathedMovies = (movies) => {
   let showedMovies = movies.filter((item) => item.isHistory);
   return showedMovies.length;
- };
+};
 
 // функция возвращающая Звание пользователя
 const createProfileUserTemplate = (moviesModel) => {

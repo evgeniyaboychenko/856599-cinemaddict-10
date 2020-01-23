@@ -2,7 +2,6 @@ import MovieModel from '../models/movie.js';
 import FilmCardComponent from '../components/film-card.js';
 import AboutFilmPopupComponent from '../components/about-film.js';
 import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
-import {FilterType} from '../const.js';
 import moment from 'moment';
 const siteBody = document.querySelector(`body`);
 export default class MovieController {
