@@ -60,7 +60,7 @@ const determineEndingWordGenre = (number) => {
 
 // функция возвращающая Popup о фильме
 const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textComment) => {
-  const {comments, posters, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, isWatchlist, isHistory, isFavorites, userRating} = film;
+  const {comments, poster, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, isWatchlist, isHistory, isFavorites, userRating} = film;
   const genresMarkup = createGenresMarkup(genres);
   const userRatingMarkup = createUserRatingMarkup(userRating);
   const releaseDateFull = moment(releaseDate).format(`DD MMMM YYYY`);
@@ -80,9 +80,9 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${posters}" alt="">
+              <img class="film-details__poster-img" src="./${poster}" alt="">
 
-              <p class="film-details__age">${ageLimit}</p>
+              <p class="film-details__age">${ageLimit}+</p>
             </div>
 
             <div class="film-details__info">
@@ -158,7 +158,7 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
 
             <div class="film-details__user-score">
               <div class="film-details__user-rating-poster">
-                <img src="./images/posters/${posters}" alt="film-poster" class="film-details__user-rating-img">
+                <img src="./${poster}" alt="film-poster" class="film-details__user-rating-img">
               </div>
 
               <section class="film-details__user-rating-inner">

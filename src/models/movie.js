@@ -1,56 +1,57 @@
 export default class Movie {
   constructor(data) {
-    this.id = data[`id`];
-    this.poster = data[`film_info.poster`];
-    this.comments = data[`comments`];
-    this.title = data[`film_info.title`];
-    this.originalTitle = data[`film_info.alternative_title`];
-    this.description = data[`film_info.description`];
-    this.rating = data[`film_info.total_rating`];
-    this.userRating = data[`user_details.personal_rating`];
-    this.director = data[`film_info.director`];
-    this.writers = data[`film_info.writers`];
-    this.actors = data[`film_info.actors`];
-    this.releaseDate = data[`film_info.release.date`];
-    this.runtime = data[`film_info.runtime`];
-    this.country = data[`film_info.release.release_country`];
-    this.genres = data[`film_info.genre`];
-    this.ageLimit = data[`film_info.age_rating`];
-    this.isWatchlist = data[`user_details.watchlist`];
-    this.isHistory = data[`user_details.already_watched`];
-    this.isFavorites = data[`user_details.favorite`];
-    this.watchingDate = data[`film_info.watching_date`];
+    this.id = data.id;
+    const film_info = data.film_info;
+    this.poster = film_info.poster;
+    this.comments = data.comments;
+    this.title = film_info.title;
+    this.originalTitle = film_info.alternative_title;
+    this.description = film_info.description;
+    this.rating = film_info.total_rating;
+    const user_details = data.user_details;
+    this.userRating = user_details.personal_rating;
+    this.director = film_info.director;
+    this.writers = film_info.writers;
+    this.actors = film_info.actors;
+    this.releaseDate = film_info.release.date;
+    this.runtime = film_info.runtime;
+    this.country = film_info.release.release_country;
+    this.genres = film_info.genre;
+    this.ageLimit = film_info.age_rating;
+    this.isWatchlist = user_details.watchlist;
+    this.isHistory = user_details.already_watched;
+    this.isFavorites = user_details.favorite;
+    this.watchingDate = user_details.watching_date;
   }
 
   toRAW() {
     return {
-    'id': this.id,
-    'posters': this.poster,
-    'title': this.title,
-    'originalTitle': this.description,
-    'description': this.originalTitle,
-    'rating': this.rating,
-    'userRating': this.userRating,
-    'director': this.director,
-    'writers': this.writers,
-    'actors': this.actors,
-    'releaseDate': this.releaseDate,
-    'runtime': this.runtime,
-    'country': this.country,
-    'genres':  this.genres,
-    'ageLimit': this.ageLimit,
-    'isWatchlist': this.isWatchlist,
-    'isHistory': this.isHistory,
-    'isFavorites': this.isFavorites,
-    'watchingDate': this.watchingDate,
-      // 'id': this.id,
-      // 'description': this.description,
-      // 'due_date': this.dueDate ? this.dueDate.toISOString() : null,
-      // 'tags': Array.from(this.tags),
-      // 'repeating_days': this.repeatingDays,
-      // 'color': this.color,
-      // 'is_favorite': this.isFavorite,
-      // 'is_archived': this.isArchive,
+      'id': this.id,
+      'comments': this.comments,
+      'film_info': {
+        'title': this.title,
+        'alternative_title': this.originalTitle,
+        'total_rating': this.rating,
+        'poster': this.poster,
+        'age_rating': this.ageLimit,
+        'director': this.director,
+        'writers': this.writers,
+        'actors':this.actors,
+        'release': {
+          'date': this.releaseDate,
+          'release_country': this.country
+        },
+        'runtime':this.runtime,
+        'genre': this.genres,
+        'description': this.description
+      },
+      'user_details': {
+        'personal_rating': this.userRating,
+        'watchlist':this.isWatchlist,
+        'already_watched': this.isHistory,
+        'watching_date': this.watchingDate,
+        'favorite': this.isFavorites
+      }
     };
   }
 

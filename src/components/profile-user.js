@@ -1,9 +1,14 @@
 import AbstractComponent from './abstract-component.js';
 import {getProfileRating} from '../utils/utils.js';
 
+const getCounWathedMovies = (movies) => {
+  let showedMovies = movies.filter((item) => item.isHistory);
+  return showedMovies.length;
+ };
+
 // функция возвращающая Звание пользователя
-const createProfileUserTemplate = (countWatchedFilms) => {
-  const profileRating = getProfileRating(countWatchedFilms);
+const createProfileUserTemplate = (moviesModel) => {
+  const profileRating = getProfileRating(getCounWathedMovies(moviesModel.getMoviesAll()));
   if (profileRating) {
     return (
       `<section class="header__profile profile">
@@ -16,11 +21,11 @@ const createProfileUserTemplate = (countWatchedFilms) => {
 };
 
 export default class ProfileUser extends AbstractComponent {
-  constructor(countWatchedFilms) {
+  constructor(moviesModel) {
     super();
-    this._countWatchedFilms = countWatchedFilms;
+    this._moviesModel = moviesModel;
   }
   getTemplate() {
-    return createProfileUserTemplate(this._countWatchedFilms);
+    return createProfileUserTemplate(this._moviesModel);
   }
 }

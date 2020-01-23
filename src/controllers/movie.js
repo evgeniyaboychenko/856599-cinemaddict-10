@@ -1,3 +1,4 @@
+import MovieModel from '../models/movie.js';
 import FilmCardComponent from '../components/film-card.js';
 import AboutFilmPopupComponent from '../components/about-film.js';
 import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
@@ -19,7 +20,7 @@ export default class MovieController {
 
   destroy() {
     removeComponent(this._filmCardComponent);
-    removeComponent(this._aboutFilmPopupComponent);
+    this.setDefaultView();
   }
 
   setDefaultView() {
@@ -45,32 +46,30 @@ export default class MovieController {
 
     const onWatchlistButtonClick = (evt) => {
       evt.preventDefault();
-      let newCard = Object.assign({}, card);
-      newCard.isWatchlist = !newCard.isWatchlist;
-      this._onDataChange(this, card, newCard, FilterType.WATCHLIST);
+      const newMovie = MovieModel.clone(card);
+      newMovie.isWatchlist = !newMovie.isWatchlist;
+      this._onDataChange(this, card, newMovie);
     };
     const onWatchedButtonClick = (evt) => {
       evt.preventDefault();
-      let newCard = Object.assign({}, card);
-      newCard.isHistory = !newCard.isHistory;
-      newCard.userRating = 0;
-      newCard.watchingDate = moment().format();
-      this._onDataChange(this, card, newCard, FilterType.HISTORY);
+      const newMovie = MovieModel.clone(card);
+      newMovie.isHistory = !newMovie.isHistory;
+      newMovie.userRating = 0;
+      newMovie.watchingDate = moment().format();
+      this._onDataChange(this, card, newMovie);
     };
 
     const onFavoriteButtonClick = (evt) => {
       evt.preventDefault();
-      let newCard = Object.assign({}, card);
-      newCard.isFavorites = !newCard.isFavorites;
-      this._onDataChange(this, card, newCard, FilterType.FAVORITES);
+      const newMovie = MovieModel.clone(card);
+      newMovie.isFavorites = !newMovie.isFavorites;
+      this._onDataChange(this, card, newMovie);
     };
 
     const onUserRatingButtonClick = (userRating) => {
-      let newCard = Object.assign({}, card);
-      newCard.userRating = userRating;
-      // изменение рейтинга фильма, новый рейтинг придёт с сервера
-      newCard.rating = 9;
-      this._onDataChange(this, card, newCard);
+      const newMovie = MovieModel.clone(card);
+      newMovie.userRating = Number(userRating);
+      this._onDataChange(this, card, newMovie);
     };
 
     const onCommentDeleteButtonClick = (idComment) => {
@@ -85,6 +84,7 @@ export default class MovieController {
     const oldFilmCardComponent = this._filmCardComponent;
 
     this._aboutFilmPopupComponent = new AboutFilmPopupComponent(card, comments);
+
     this._filmCardComponent = new FilmCardComponent(card);
 
     if (oldAboutFilmPopupComponent && oldFilmCardComponent) {
@@ -112,7 +112,6 @@ export default class MovieController {
     this._filmCardComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
 
     const onFilmCardElementClick = () => {
-
       this._onViewChange();
       // показать попап
       this._aboutFilmPopupComponent.resetState();

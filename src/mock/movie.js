@@ -5,7 +5,6 @@ import {generateFlagValue} from '../utils/utils.js';
 import {getObjectsArray} from '../utils/utils.js';
 import moment from 'moment';
 
-
 const MOVIE_TITLES = [`Frozen II`, `The Shawshank Redemption`, `Forrest Gump`, `The Matrix`, `The Matrix`, `The Lord of the Rings: The Fellowship of the Ring`, `Pulp Fiction`, `The Silence of the Lambs`, `Saving Private Ryan`, `Gladiator`, `Se7en`];
 const COUNTRIES = [`Russia`, `USA`, `Spain`, `UC`, `Japan`, `Finland`, `Israel`, `Poland`, `Thailand`, `Turkey`];
 const PEOPLE_NAMES = [`Rachel Matthews`, `Alan Tudyk`, `Hadley Gannaway`, `Kristen Bell`, `Frank Darabont`, `Stephen King`, `Tim Robbins`, `Morgan Freeman`, `Bob Gunton`, `Tom Hanks`, `Robin Wright`, `Gary Sinise`];
@@ -37,23 +36,6 @@ const deleteLastItem = (str) => {
   return str.slice(0, -1);
 };
 
-// const generateRunTime = () => {
-//   let date = new Date();
-//   date.setHours(getRandomRange(0, 4));
-//   date.setMinutes(getRandomRange(0, 60));
-//   const hours = date.getHours() < 1 ? `` : `${date.getHours()}h`;
-//   const minute = date.getMinutes();
-//   return `${hours} ${minute}min`;
-// };
-
-// const getDateRelease = () => {
-//   let dateRelese = moment(1475924187819).format(`DD MMMM YYYY`);
-//   console.log(dateRelese);
-//   let date = new Date();
-//   date.setFullYear(getRandomRange(1920, date.getFullYear()), getRandomNumber(12), getRandomNumber(31));
-//   return date;
-// };
-
 const generateRating = () => {
   return (Math.random() * 10).toFixed(1);
 };
@@ -61,7 +43,7 @@ const generateRating = () => {
 export const generateMovieCard = () => {
   return {
     id: String(new Date().valueOf() + Math.random()),
-    posters: SRC_IMAGES[getRandomNumber(SRC_IMAGES.length)],
+    poster: SRC_IMAGES[getRandomNumber(SRC_IMAGES.length)],
     title: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],
     originalTitle: MOVIE_TITLES[getRandomNumber(MOVIE_TITLES.length)],
     description: getText(generateRandomArray(getDescriptions(DESCRIPTION_TEXT), getRandomRange(1, 4)), ` `),

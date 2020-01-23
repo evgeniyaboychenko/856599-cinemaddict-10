@@ -2,6 +2,7 @@ import {FilterType} from '../const.js';
 import {PEOPLE_NAMES} from '../mock/comment.js';
 import {getRandomNumber} from '../utils/utils.js';
 
+
 export const getMoviesByFilter = (movies, checkedFilter) => {
   switch (checkedFilter) {
     case FilterType.ALL:
@@ -28,10 +29,15 @@ const getMatchByFilter = (movie, filter) => {
   return false;
 };
 
+let movieIdToCommentsMap = new Map();
+const setMovieIdToComments = (movieId, movieComments) => {
+    return movieIdToCommentsMap.set(movieId, movieComments);
+};
+
 export default class Movies {
   constructor() {
     this._movies = [];
-    this._comments = [];
+    this._comments = new Map();
     this._currentFilter = FilterType.ALL;
     this._handlerFilterChanged = null;
     this._handlerDataChanged = null;
@@ -53,9 +59,14 @@ export default class Movies {
     return getMatchByFilter(card, this._currentFilter);
   }
 
-  setMovies(movies, comments) {
+  setMovies(movies) {
     this._movies = Array.from(movies);
-    this._comments = comments;
+    // this._comments = comments;
+  }
+
+  setComments(movieId, comments) {
+    this._comments = setMovieIdToComments(movieId, comments);
+    //this._comments = comments;
   }
 
   setFilter(currentFilter) {

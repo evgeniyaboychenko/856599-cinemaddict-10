@@ -1,14 +1,6 @@
 import AbstractComponent from './abstract-component.js';
 import {FilterType} from '../const.js';
 
-// export const MenuItem = {
-//   ALL_MOVIES: `control__new-task`,
-//   WATCHLIST:
-//   HISTORY:
-//   FAVORITES:
-//   STATS: `control__statistic`,
-// };
-
 
 const createFilterMarkup = (filter) => {
   const {name, count} = filter;
@@ -54,11 +46,6 @@ export default class MainNavigation extends AbstractComponent {
       if (evt.target.tagName !== `A`) {
         return;
       }
-
-      // if (evt.target.classList.contains(`main-navigation__item--additional`)) {
-
-      //   return;
-      // }
 
       const filterType = evt.target.dataset.filterType;
 

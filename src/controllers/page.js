@@ -153,13 +153,16 @@ export default class PageController {
       });
     }
     if (!newComment) {
-      const isSuccess = this._moviesModel.removeComment(idCard, oldIdComment);
-      if (isSuccess) {
-        const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
-        movieController.render(newData, this._moviesModel.getComments(newData.id));
-        sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
-        this._renderMostCommentedMovie();
-      }
+      this._api.deleteComment(oldIdComment)
+      .then(() => {
+        const isSuccess = this._moviesModel.removeComment(idCard, oldIdComment);
+        if (isSuccess) {
+          const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
+          movieController.render(newData, this._moviesModel.getComments(newData.id));
+          sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
+          this._renderMostCommentedMovie();
+        }
+      });
     } else {
       const isSuccess = this._moviesModel.addComment(idCard, newComment);
       if (isSuccess) {
@@ -199,18 +202,19 @@ export default class PageController {
       });
     }
 
-    const isSuccess = this._moviesModel.updateMovies(oldData.id, newData);
-    if (isSuccess) {
-      movieController.render(newData, this._moviesModel.getComments(newData.id));
-      sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
-      // если пользователь поставил\снял оценку фильма
-      if (oldData.rating !== newData.rating) {
-        this._renderTopRatedMovie();
+    this._api.updateMovie(oldData.id, newData)
+    .then((movieModel) => {
+      const isSuccess = this._moviesModel.updateMovies(oldData.id, movieModel );
+      if (isSuccess) {movieModel
+        movieController.render(movieModel, this._moviesModel.getComments(movieModel.id));
+        sameMovieControllers.forEach((controller) => controller.render(movieModel, this._moviesModel.getComments(movieModel.id)));
+        // если пользователь поставил\снял оценку фильма
+        if (oldData.rating !== movieModel.rating) {
+          this._renderTopRatedMovie();
+        }
       }
-    }
-
-    // снимаем фильтр у карточки в соответствующем списке фильтра
-    if (this._moviesModel.matchCurrentFilter(oldData) !== this._moviesModel.matchCurrentFilter(newData)) {
+      // снимаем фильтр у карточки в соответствующем списке фильтра
+    if (this._moviesModel.matchCurrentFilter(oldData) !== this._moviesModel.matchCurrentFilter(movieModel)) {
       if (this._moviesModel.matchCurrentFilter(oldData)) {
         const showedCardsCount = this._movieControllers.length;
         this._removeMovies();
@@ -227,12 +231,19 @@ export default class PageController {
         this._renderShowMoreButton();
       }
     }
+    });
   }
 
   _renderCard(cards, container, onDataChange, onViewChange, onDataCommentChange) {
     cards.forEach((card) => {
       const movieController = new MovieController(container, onDataChange, onViewChange, onDataCommentChange);
+
+    // загрузка комментариев с сервера
+    this._api.getComments(card.id)
+    .then((commentsForMovie) => {
+      this._moviesModel.setComments(card.id, commentsForMovie);
       movieController.render(card, this._moviesModel.getComments(card.id));
+    });
       this._movieControllers.push(movieController);
     });
   }
@@ -268,7 +279,12 @@ export default class PageController {
   _renderCardTop(cards, container, onDataChange, onViewChange, onDataCommentChange) {
     cards.forEach((card) => {
       const movieController = new MovieController(container, onDataChange, onViewChange, onDataCommentChange);
+          // загрузка комментариев с сервера
+    this._api.getComments(card.id)
+    .then((commentsForMovie) => {
+      this._moviesModel.setComments(card.id, commentsForMovie);
       movieController.render(card, this._moviesModel.getComments(card.id));
+    });
       this._topMoviesModel.push(card);
       this._movieTopControllers.push(movieController);
     });
