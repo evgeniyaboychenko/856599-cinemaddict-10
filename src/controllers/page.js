@@ -164,13 +164,18 @@ export default class PageController {
         }
       });
     } else {
-      const isSuccess = this._moviesModel.addComment(idCard, newComment);
-      if (isSuccess) {
-        const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
-        movieController.render(newData, this._moviesModel.getComments(newData.id));
-        sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
-        this._renderMostCommentedMovie();
-      }
+      this._api.createComment(idCard, newComment)
+      .then((data) => {
+        const {movie, comments} = data;
+        this._moviesModel.setComments(idCard, comments);
+        const isSuccess = this._moviesModel.updateMovie(idCard, movie);
+        if (isSuccess) {
+          const newData = this._moviesModel.getMoviesAll().find((item) => item.id === idCard);
+          movieController.render(newData, this._moviesModel.getComments(newData.id));
+          sameMovieControllers.forEach((controller) => controller.render(newData, this._moviesModel.getComments(newData.id)));
+          this._renderMostCommentedMovie();
+        }
+      });
     }
   }
 
@@ -204,7 +209,7 @@ export default class PageController {
 
     this._api.updateMovie(oldData.id, newData)
     .then((movieModel) => {
-      const isSuccess = this._moviesModel.updateMovies(oldData.id, movieModel);
+      const isSuccess = this._moviesModel.updateMovie(oldData.id, movieModel);
       if (isSuccess) {
         movieController.render(movieModel, this._moviesModel.getComments(movieModel.id));
         sameMovieControllers.forEach((controller) => controller.render(movieModel, this._moviesModel.getComments(movieModel.id)));

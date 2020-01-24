@@ -1,6 +1,6 @@
 import {FilterType} from '../const.js';
-import {PEOPLE_NAMES} from '../mock/comment.js';
-import {getRandomNumber} from '../utils/utils.js';
+// import {PEOPLE_NAMES} from '../mock/comment.js';
+// import {getRandomNumber} from '../utils/utils.js';
 
 
 export const getMoviesByFilter = (movies, checkedFilter) => {
@@ -80,7 +80,7 @@ export default class Movies {
     this._handlerDataChanged = handler;
   }
 
-  updateMovies(id, movie) {
+  updateMovie(id, movie) {
     const index = this._movies.findIndex((it) => it.id === id);
     if (index === -1) {
       return false;
@@ -89,7 +89,6 @@ export default class Movies {
     const copyMovies = this._movies.slice();
     copyMovies.splice(index, 1, movie);
     this._movies = copyMovies;
-
     this._handlerDataChanged();
     return true;
   }
@@ -111,25 +110,20 @@ export default class Movies {
     const copyComments = new Map(this._comments);
     copyComments.get(idCard).splice(index, 1);
     this._comments = copyComments;
-
-    // на эти изменения подпишется статистика
-    // this._handlerDataChanged();
     return true;
   }
 
-  addComment(idCard, newComment) {
-    newComment.id = String(new Date().valueOf() + Math.random());
-    newComment.autorComment = PEOPLE_NAMES[getRandomNumber(PEOPLE_NAMES.length)];
-    const copyMovies = this._movies.slice();
-    const movie = copyMovies.find((it) => it.id === idCard);
-    movie.comments.push(newComment.id);
-    this._movies = copyMovies;
+  // addComment(idCard, newComment) {
+  //   newComment.id = String(new Date().valueOf() + Math.random());
+  //   newComment.autorComment = PEOPLE_NAMES[getRandomNumber(PEOPLE_NAMES.length)];
+  //   const copyMovies = this._movies.slice();
+  //   const movie = copyMovies.find((it) => it.id === idCard);
+  //   movie.comments.push(newComment.id);
+  //   this._movies = copyMovies;
 
-    const copyComments = new Map(this._comments);
-    copyComments.get(idCard).push(newComment);
-    this._comments = copyComments;
-    // на эти изменения подпишется статистика
-    // this._handlerDataChanged();
-    return true;
-  }
+  //   const copyComments = new Map(this._comments);
+  //   copyComments.get(idCard).push(newComment);
+  //   this._comments = copyComments;
+  //   return true;
+  // }
 }

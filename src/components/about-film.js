@@ -4,6 +4,7 @@ const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
 import {EmojiType} from '../const.js';
 import moment from 'moment';
 import {getDurationMovie} from '../utils/utils.js';
+import LocalComment from '../models/local-comment.js';
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -384,11 +385,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       if (evt.key === `Enter` && evt.ctrlKey) {
         this._saveTextComment();
         if (this._textComment && this._currentEmoji) {
-          let localComment = {
-            textComment: this._textComment,
-            emoji: this._currentEmoji,
-            dateComment: getDateComment(generateDateComment()),
-          };
+          let localComment = new LocalComment(getDateComment(generateDateComment()), this._textComment, this._currentEmoji);
           onCommentAdd(localComment);
         }
       }
