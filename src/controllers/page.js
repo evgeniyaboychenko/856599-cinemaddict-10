@@ -298,6 +298,7 @@ export default class PageController {
     });
   }
 
+  // рендер топ комментируемых фильмов
   _renderCardTopCommented(cards, container, onDataChange, onViewChange, onDataCommentChange) {
     const oldTopCommentedMoviesModel = this._topCommentedMoviesModel;
     const oldMovieTopCommentedControllers = this._movieTopCommentedControllers;
