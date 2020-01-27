@@ -4,6 +4,7 @@ const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
 import {EmojiType} from '../const.js';
 import moment from 'moment';
 import {getDurationMovie} from '../utils/utils.js';
+import LocalComment from '../models/local-comment.js';
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -13,7 +14,6 @@ const createGenresMarkup = (genres) => {
   })
     .join(`\n`);
 };
-
 
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
@@ -35,7 +35,6 @@ const createCommentsMarkup = (comments) => {
   })
 .join(`\n`);
 };
-
 
 const createUserRatingMarkup = (userRating) => {
   const r = [];
@@ -60,7 +59,7 @@ const determineEndingWordGenre = (number) => {
 
 // функция возвращающая Popup о фильме
 const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textComment) => {
-  const {comments, posters, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, isWatchlist, isHistory, isFavorites, userRating} = film;
+  const {comments, poster, title, originalTitle, description, rating, director, writers, actors, releaseDate, runtime, country, genres, ageLimit, isWatchlist, isHistory, isFavorites, userRating} = film;
   const genresMarkup = createGenresMarkup(genres);
   const userRatingMarkup = createUserRatingMarkup(userRating);
   const releaseDateFull = moment(releaseDate).format(`DD MMMM YYYY`);
@@ -80,9 +79,9 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${posters}" alt="">
+              <img class="film-details__poster-img" src="./${poster}" alt="">
 
-              <p class="film-details__age">${ageLimit}</p>
+              <p class="film-details__age">${ageLimit}+</p>
             </div>
 
             <div class="film-details__info">
@@ -158,7 +157,7 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
 
             <div class="film-details__user-score">
               <div class="film-details__user-rating-poster">
-                <img src="./images/posters/${posters}" alt="film-poster" class="film-details__user-rating-img">
+                <img src="./${poster}" alt="film-poster" class="film-details__user-rating-img">
               </div>
 
               <section class="film-details__user-rating-inner">
@@ -228,6 +227,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._textComment = null;
     this._currentEmoji = null;
     this._currentUserRating = 0;
+    this.setCommentsMovie = this.setCommentsMovie.bind(this);
   }
 
   recoveryListeners() {
@@ -276,6 +276,10 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     if (this._onCommentAdd) {
       this.setCommentAddListener(this._onCommentAdd);
     }
+  }
+
+  setCommentsMovie(comments) {
+    this._comments = comments;
   }
 
   getTemplate() {
@@ -362,7 +366,6 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this.setUndoButtonListener(this._onUndoButtonClick);
   }
 
-
   setCommentDeleteButtonListener(onCommentDeleteButtonClick) {
     this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -384,11 +387,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       if (evt.key === `Enter` && evt.ctrlKey) {
         this._saveTextComment();
         if (this._textComment && this._currentEmoji) {
-          let localComment = {
-            textComment: this._textComment,
-            emoji: this._currentEmoji,
-            dateComment: getDateComment(generateDateComment()),
-          };
+          let localComment = new LocalComment(getDateComment(generateDateComment()), this._textComment, this._currentEmoji);
           onCommentAdd(localComment);
         }
       }

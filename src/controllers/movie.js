@@ -1,7 +1,7 @@
+import MovieModel from '../models/movie.js';
 import FilmCardComponent from '../components/film-card.js';
 import AboutFilmPopupComponent from '../components/about-film.js';
 import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
-import {FilterType} from '../const.js';
 import moment from 'moment';
 const siteBody = document.querySelector(`body`);
 export default class MovieController {
@@ -15,11 +15,13 @@ export default class MovieController {
     this._filmCardComponent = null;
     this._userRatingComponent = null;
     this._isOpenPopup = false;
+    this._comments = [];
+    this._loadComments = null;
   }
 
   destroy() {
     removeComponent(this._filmCardComponent);
-    removeComponent(this._aboutFilmPopupComponent);
+    this.setDefaultView();
   }
 
   setDefaultView() {
@@ -29,7 +31,9 @@ export default class MovieController {
     }
   }
 
-  render(card, comments) {
+  render(card, loadComments) {
+    this._loadComments = loadComments;
+
     const addListenerCardClick = () => {
       this._filmCardComponent.setPosterClickHandler(onFilmCardElementClick);
       this._filmCardComponent.setTitleClickHandler(onFilmCardElementClick);
@@ -45,32 +49,30 @@ export default class MovieController {
 
     const onWatchlistButtonClick = (evt) => {
       evt.preventDefault();
-      let newCard = Object.assign({}, card);
-      newCard.isWatchlist = !newCard.isWatchlist;
-      this._onDataChange(this, card, newCard, FilterType.WATCHLIST);
+      const newMovie = MovieModel.clone(card);
+      newMovie.isWatchlist = !newMovie.isWatchlist;
+      this._onDataChange(this, card, newMovie);
     };
     const onWatchedButtonClick = (evt) => {
       evt.preventDefault();
-      let newCard = Object.assign({}, card);
-      newCard.isHistory = !newCard.isHistory;
-      newCard.userRating = 0;
-      newCard.watchingDate = moment().format();
-      this._onDataChange(this, card, newCard, FilterType.HISTORY);
+      const newMovie = MovieModel.clone(card);
+      newMovie.isHistory = !newMovie.isHistory;
+      newMovie.userRating = 0;
+      newMovie.watchingDate = moment().format();
+      this._onDataChange(this, card, newMovie);
     };
 
     const onFavoriteButtonClick = (evt) => {
       evt.preventDefault();
-      let newCard = Object.assign({}, card);
-      newCard.isFavorites = !newCard.isFavorites;
-      this._onDataChange(this, card, newCard, FilterType.FAVORITES);
+      const newMovie = MovieModel.clone(card);
+      newMovie.isFavorites = !newMovie.isFavorites;
+      this._onDataChange(this, card, newMovie);
     };
 
     const onUserRatingButtonClick = (userRating) => {
-      let newCard = Object.assign({}, card);
-      newCard.userRating = userRating;
-      // изменение рейтинга фильма, новый рейтинг придёт с сервера
-      newCard.rating = 9;
-      this._onDataChange(this, card, newCard);
+      const newMovie = MovieModel.clone(card);
+      newMovie.userRating = Number(userRating);
+      this._onDataChange(this, card, newMovie);
     };
 
     const onCommentDeleteButtonClick = (idComment) => {
@@ -81,47 +83,8 @@ export default class MovieController {
       this._onCommentDataChange(this, card.id, null, localComment);
     };
 
-    const oldAboutFilmPopupComponent = this._aboutFilmPopupComponent;
-    const oldFilmCardComponent = this._filmCardComponent;
-
-    this._aboutFilmPopupComponent = new AboutFilmPopupComponent(card, comments);
-    this._filmCardComponent = new FilmCardComponent(card);
-
-    if (oldAboutFilmPopupComponent && oldFilmCardComponent) {
-      replace(this._filmCardComponent, oldFilmCardComponent);
-      if (replace(this._aboutFilmPopupComponent, oldAboutFilmPopupComponent)) {
-        this._aboutFilmPopupComponent.addEmojiHandler();
-        this._aboutFilmPopupComponent.setCloseButtonClickHandler(onCloseButtonClick);
-
-        this._aboutFilmPopupComponent.setWatchlistButtonClickHandler(onWatchlistButtonClick);
-        this._aboutFilmPopupComponent.setWatchedButtonClickHandler(onWatchedButtonClick);
-        this._aboutFilmPopupComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
-
-        this._aboutFilmPopupComponent.setCommentDeleteButtonClickHandler(onCommentDeleteButtonClick);
-        this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
-
-        this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
-        this._aboutFilmPopupComponent.setUndoButtonClickHandler(onUserRatingButtonClick);
-      }
-    } else {
-      render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
-    }
-
-    this._filmCardComponent.setWatchlistButtonClickHandler(onWatchlistButtonClick);
-    this._filmCardComponent.setWatchedButtonClickHandler(onWatchedButtonClick);
-    this._filmCardComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
-
-    const onFilmCardElementClick = () => {
-
-      this._onViewChange();
-      // показать попап
-      this._aboutFilmPopupComponent.resetState();
-      render(siteBody, this._aboutFilmPopupComponent, RenderPosition.BEFOREEND);
-      this._isOpenPopup = true;
-
-      document.addEventListener(`keydown`, onPopupEscPress);
+    const setPopupsHandler = () => {
       this._aboutFilmPopupComponent.addEmojiHandler();
-
       this._aboutFilmPopupComponent.setCloseButtonClickHandler(onCloseButtonClick);
 
       this._aboutFilmPopupComponent.setWatchlistButtonClickHandler(onWatchlistButtonClick);
@@ -135,8 +98,58 @@ export default class MovieController {
       this._aboutFilmPopupComponent.setUndoButtonClickHandler(onUserRatingButtonClick);
     };
 
-    addListenerCardClick();
+    const oldAboutFilmPopupComponent = this._aboutFilmPopupComponent;
+    const oldFilmCardComponent = this._filmCardComponent;
 
+    this._aboutFilmPopupComponent = new AboutFilmPopupComponent(card, []);
+    this._filmCardComponent = new FilmCardComponent(card);
+
+    this._aboutFilmPopupComponent.setCommentsMovie(this._comments);
+
+    if (oldAboutFilmPopupComponent && oldFilmCardComponent) {
+      replace(this._filmCardComponent, oldFilmCardComponent);
+
+      if (this._isOpenPopup) {
+        if (this._comments.length !== card.comments.length) {
+          this._loadComments(card)
+          .then((comments) => {
+            this._comments = comments;
+            this._aboutFilmPopupComponent.setCommentsMovie(this._comments);
+            if (replace(this._aboutFilmPopupComponent, oldAboutFilmPopupComponent)) {
+              setPopupsHandler();
+            }
+          });
+        } else {
+          if (replace(this._aboutFilmPopupComponent, oldAboutFilmPopupComponent)) {
+            setPopupsHandler();
+          }
+        }
+      }
+    } else {
+      render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
+    }
+
+    this._filmCardComponent.setWatchlistButtonClickHandler(onWatchlistButtonClick);
+    this._filmCardComponent.setWatchedButtonClickHandler(onWatchedButtonClick);
+    this._filmCardComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
+
+    const onFilmCardElementClick = () => {
+      this._onViewChange();
+
+      this._loadComments(card)
+      .then((comments) => {
+        this._comments = comments;
+
+        this._aboutFilmPopupComponent.setCommentsMovie(this._comments);
+        this._aboutFilmPopupComponent.resetState();
+        // показать попап
+        render(siteBody, this._aboutFilmPopupComponent, RenderPosition.BEFOREEND);
+        this._isOpenPopup = true;
+        document.addEventListener(`keydown`, onPopupEscPress);
+        setPopupsHandler();
+      });
+    };
+    addListenerCardClick();
     const onPopupEscPress = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         onCloseButtonClick();

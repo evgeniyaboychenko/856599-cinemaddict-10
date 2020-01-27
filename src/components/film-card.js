@@ -1,15 +1,15 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import moment from 'moment';
-const COMMENTS_LENGTH = 140;
+const DESCRITPION_LENGTH = 140;
 import {getDurationMovie} from '../utils/utils.js';
 
 // функция возвращающая Карточку фильма
 const cropText = (text) => {
-  return text.length > COMMENTS_LENGTH ? `${text.substr(0, COMMENTS_LENGTH - 1)}...` : text;
+  return text.length > DESCRITPION_LENGTH ? `${text.substr(0, DESCRITPION_LENGTH - 1)}...` : text;
 };
 
 const createFilmCardTemplate = (film) => {
-  const {comments, posters, title, description, rating, releaseDate, runtime, genres, isWatchlist, isHistory, isFavorites} = film;
+  const {comments, poster, title, description, rating, releaseDate, runtime, genres, isWatchlist, isHistory, isFavorites} = film;
   const shortDescription = cropText(description);
   const releaseDateYear = moment(releaseDate).format(`YYYY`);
   const runTime = getDurationMovie(runtime);
@@ -22,7 +22,7 @@ const createFilmCardTemplate = (film) => {
         <span class="film-card__duration">${runTime}</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
-      <img src="./images/posters/${posters}" alt="" class="film-card__poster">
+      <img src="./${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
       <a class="film-card__comments">${comments.length} comments</a>
       <form class="film-card__controls">
