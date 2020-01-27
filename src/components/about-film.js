@@ -15,7 +15,6 @@ const createGenresMarkup = (genres) => {
     .join(`\n`);
 };
 
-
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
     return (
@@ -36,7 +35,6 @@ const createCommentsMarkup = (comments) => {
   })
 .join(`\n`);
 };
-
 
 const createUserRatingMarkup = (userRating) => {
   const r = [];
@@ -229,6 +227,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._textComment = null;
     this._currentEmoji = null;
     this._currentUserRating = 0;
+    this.setCommentsMovie = this.setCommentsMovie.bind(this);
   }
 
   recoveryListeners() {
@@ -277,6 +276,10 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     if (this._onCommentAdd) {
       this.setCommentAddListener(this._onCommentAdd);
     }
+  }
+
+  setCommentsMovie(comments) {
+    this._comments = comments;
   }
 
   getTemplate() {
@@ -362,7 +365,6 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._onUndoButtonClick = handler;
     this.setUndoButtonListener(this._onUndoButtonClick);
   }
-
 
   setCommentDeleteButtonListener(onCommentDeleteButtonClick) {
     this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
