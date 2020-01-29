@@ -6,6 +6,12 @@ import moment from 'moment';
 const siteBody = document.querySelector(`body`);
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
+export const OperationType = {
+  DELETE_COMMENT: `delete`,
+  CREATE_COMMENT: `create`,
+  SET_USER_RATING: `set`,
+};
+
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, onDataCommentChange) {
     this._container = container;
@@ -13,10 +19,8 @@ export default class MovieController {
     this._onViewChange = onViewChange;
     this._onCommentDataChange = onDataCommentChange;
 
-
     this._aboutFilmPopupComponent = null;
     this._filmCardComponent = null;
-    this._userRatingComponent = null;
     this._isOpenPopup = false;
     this._comments = [];
     this._loadComments = null;
@@ -34,29 +38,27 @@ export default class MovieController {
     }
   }
 
-  shake(isFlag, idComment) {
+  shake(operationType, idComment) {
     this._aboutFilmPopupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-
+    if (operationType === OperationType.SET_USER_RATING) {
+      this._aboutFilmPopupComponent.setBackgroundUserRatingInput();
+    }
     setTimeout(() => {
       this._aboutFilmPopupComponent.getElement().style.animation = ``;
-      if (isFlag) {
-        this._aboutFilmPopupComponent.setDefaultTextareaComment();
-      } else {
-        this._aboutFilmPopupComponent.setDefaultButtonDelete(idComment);
+      switch (operationType) {
+        case OperationType.DELETE_COMMENT:
+          this._aboutFilmPopupComponent.setDefaultButtonDelete(idComment);
+          return;
+        case OperationType.CREATE_COMMENT:
+          this._aboutFilmPopupComponent.setDefaultTextareaComment();
+          return;
+        case OperationType.SET_USER_RATING:
+          this._aboutFilmPopupComponent.getElement().style.animation = ``;
+          this._aboutFilmPopupComponent.setDefaultUserRatingInput();
+          return;
       }
-
     }, SHAKE_ANIMATION_TIMEOUT);
   }
-
-  shakeUserRating() {
-    this._aboutFilmPopupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    this._aboutFilmPopupComponent.setRedUserRatingInput();
-    setTimeout(() => {
-      this._aboutFilmPopupComponent.getElement().style.animation = ``;
-      this._aboutFilmPopupComponent.setDefaultUserRatingInput();
-    }, SHAKE_ANIMATION_TIMEOUT);
-  }
-
 
   render(card, loadComments) {
     this._loadComments = loadComments;

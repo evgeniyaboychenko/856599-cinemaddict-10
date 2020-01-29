@@ -273,12 +273,11 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((item) => item.setAttribute(`disabled`, `disabled`));
   }
 
-  setRedUserRatingInput() {
+  setBackgroundUserRatingInput() {
     if (this._currentUserRating) {
       this.getElement().querySelector(`#rating-${this._currentUserRating} + .film-details__user-rating-label`).style.backgroundColor = `red`;
     }
   }
-
 
   setDefaultUserRatingInput() {
     if (this._currentUserRating) {
