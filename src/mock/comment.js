@@ -6,19 +6,7 @@ import {EmojiType} from '../const.js';
 const emoji = Object.values(EmojiType);
 const COMMENTS_TEXT = [`Interesting setting and a good cast`, `Booooooooooring`, `Very very old. Meh`, `Almost two hours? Seriously?`];
 
-export const generateDateComment = () => {
-  let date = new Date();
-  return date;
-};
 
-export const getDateComment = (date) => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const number = date.getDate();
-  const hours = date.getHours();
-  const minute = date.getMinutes();
-  return `${year}/${month}/${number} ${hours}:${minute}`;
-};
 
 const generateMovieComment = () => {
   return {

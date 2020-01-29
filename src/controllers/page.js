@@ -1,16 +1,12 @@
 import ListFilmCardsComponent from '../components/list-film-cards.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
-
 import NoDataFilmComponent from '../components/no-data_film.js';
 import SortFilmComponent, {SortType} from '../components/sort.js';
-
-import {CARD_COUNT, MOVIE_COUNT, CARD_COUNT_TOP} from '../const.js';
-
+import {CARD_COUNT, CARD_COUNT_TOP} from '../const.js';
 import {generateRandomArray} from '../utils/utils.js';
 import {render, RenderPosition, removeComponent} from '../utils/render.js';
 import MovieController from './movie.js';
 import moment from 'moment';
-
 
 // функция определяющая TOP
 const isTopRatedMovieShowing = (cards, field) => {
@@ -65,37 +61,28 @@ export default class PageController {
     this._container = container;
     this._moviesModel = moviesModel;
     this._api = api;
-
     this._onFilterChange = this._onFilterChange.bind(this);
     this._moviesModel.setFilterChangedHandler(this._onFilterChange);
-
     this._sortFilmComponent = new SortFilmComponent();
     this._onSortChange = this._onSortChange.bind(this);
     this._sortFilmComponent.setSortTypeChangeHandler(this._onSortChange);
-
     this._listFilmCardsComponent = new ListFilmCardsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._noDataFilmComponent = new NoDataFilmComponent();
-
     this._onViewChange = this._onViewChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onCommentDataChange = this._onCommentDataChange.bind(this);
     this._loadComments = this._loadComments.bind(this);
-
     this._movieControllers = [];
     this._topRatedModelContrMap = new Map();
     this._topCommentedModelContrMap = new Map();
     this._movieTopControllers = [];
     this._topMoviesModel = [];
-
     this._movieTopRatedControllers = [];
     this._topRatedMoviesModel = [];
     this._movieTopCommentedControllers = [];
     this._topCommentedMoviesModel = [];
-
-
     this._siteFilmsListContainerElements = null;
-
     this._currentFilter = null;
     this._currenSortType = SortType.DEFAULT;
   }
@@ -109,7 +96,6 @@ export default class PageController {
     this._listFilmCardsComponent.hide();
     this._sortFilmComponent.hide();
   }
-
 
   _removeMovies() {
     this._movieControllers.forEach((movieController) => movieController.destroy());
@@ -180,6 +166,9 @@ export default class PageController {
           sameMovieControllers.forEach((controller) => controller.render(newData, this._loadComments));
           this._renderMostCommentedMovie();
         }
+      })
+      .catch(() => {
+        movieController.shake(false, oldIdComment);
       });
     } else {
       this._api.createComment(idCard, newComment)
@@ -191,6 +180,9 @@ export default class PageController {
           sameMovieControllers.forEach((controller) => controller.render(movie, this._loadComments));
           this._renderMostCommentedMovie();
         }
+      })
+      .catch(() => {
+        movieController.shake(true);
       });
     }
   }
@@ -227,6 +219,9 @@ export default class PageController {
           this._renderShowMoreButton();
         }
       }
+    })
+    .catch(() => {
+      movieController.shakeUserRating();
     });
   }
 
@@ -374,7 +369,6 @@ export default class PageController {
     this._renderShowMoreButton();
   }
 
-
   render() {
     const movies = this._getSortMovies(this._currenSortType, this._moviesModel.getMovies());
     const drawMovieCards = () => {
@@ -392,7 +386,7 @@ export default class PageController {
       render(this._container, this._noDataFilmComponent, RenderPosition.BEFOREEND);
     };
 
-    if (MOVIE_COUNT) {
+    if (movies.length) {
       drawMovieCards();
     } else {
       drawMessageNoFilms();

@@ -4,12 +4,15 @@ import AboutFilmPopupComponent from '../components/about-film.js';
 import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
 import moment from 'moment';
 const siteBody = document.querySelector(`body`);
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, onDataCommentChange) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._onCommentDataChange = onDataCommentChange;
+
 
     this._aboutFilmPopupComponent = null;
     this._filmCardComponent = null;
@@ -30,6 +33,30 @@ export default class MovieController {
       this._isOpenPopup = false;
     }
   }
+
+  shake(isFlag, idComment) {
+    this._aboutFilmPopupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._aboutFilmPopupComponent.getElement().style.animation = ``;
+      if (isFlag) {
+        this._aboutFilmPopupComponent.setDefaultTextareaComment();
+      } else {
+        this._aboutFilmPopupComponent.setDefaultButtonDelete(idComment);
+      }
+
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeUserRating() {
+    this._aboutFilmPopupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._aboutFilmPopupComponent.setRedUserRatingInput();
+    setTimeout(() => {
+      this._aboutFilmPopupComponent.getElement().style.animation = ``;
+      this._aboutFilmPopupComponent.setDefaultUserRatingInput();
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
 
   render(card, loadComments) {
     this._loadComments = loadComments;
@@ -53,6 +80,7 @@ export default class MovieController {
       newMovie.isWatchlist = !newMovie.isWatchlist;
       this._onDataChange(this, card, newMovie);
     };
+
     const onWatchedButtonClick = (evt) => {
       evt.preventDefault();
       const newMovie = MovieModel.clone(card);
@@ -72,14 +100,17 @@ export default class MovieController {
     const onUserRatingButtonClick = (userRating) => {
       const newMovie = MovieModel.clone(card);
       newMovie.userRating = Number(userRating);
+      this._aboutFilmPopupComponent.setDisabledUserRatingInput(userRating);
       this._onDataChange(this, card, newMovie);
     };
 
-    const onCommentDeleteButtonClick = (idComment) => {
+    const onCommentDelete = (idComment) => {
+      this._aboutFilmPopupComponent.setDisabledButtonDelete(idComment);
       this._onCommentDataChange(this, card.id, idComment, null);
     };
 
     const onCommentAdd = (localComment) => {
+      this._aboutFilmPopupComponent.setDisabledTextareaComment();
       this._onCommentDataChange(this, card.id, null, localComment);
     };
 
@@ -91,7 +122,7 @@ export default class MovieController {
       this._aboutFilmPopupComponent.setWatchedButtonClickHandler(onWatchedButtonClick);
       this._aboutFilmPopupComponent.setFavoriteButtonClickHandler(onFavoriteButtonClick);
 
-      this._aboutFilmPopupComponent.setCommentDeleteButtonClickHandler(onCommentDeleteButtonClick);
+      this._aboutFilmPopupComponent.setCommentDeleteHandler(onCommentDelete);
       this._aboutFilmPopupComponent.setCommentAddHandler(onCommentAdd);
 
       this._aboutFilmPopupComponent.setUserRatingButtonClickHandler(onUserRatingButtonClick);
@@ -149,6 +180,7 @@ export default class MovieController {
         setPopupsHandler();
       });
     };
+
     addListenerCardClick();
     const onPopupEscPress = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {

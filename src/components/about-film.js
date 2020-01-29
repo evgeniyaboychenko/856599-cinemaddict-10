@@ -1,10 +1,14 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
-import {generateDateComment, getDateComment} from '../mock/comment.js';
 const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
 import {EmojiType} from '../const.js';
 import moment from 'moment';
 import {getDurationMovie} from '../utils/utils.js';
 import LocalComment from '../models/local-comment.js';
+
+export const generateDateComment = () => {
+  let date = moment().toDate();
+  return date;
+};
 
 const createGenresMarkup = (genres) => {
   return genres.map((genre) => {
@@ -17,6 +21,7 @@ const createGenresMarkup = (genres) => {
 
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
+    let commentDate = moment(comment.dateComment).format(`YYYY/MM/DD HH:mm`);
     return (
       `<li class="film-details__comment">
         <span class="film-details__comment-emoji">
@@ -26,7 +31,7 @@ const createCommentsMarkup = (comments) => {
           <p class="film-details__comment-text">${comment.textComment}</p>
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${comment.autorComment}</span>
-            <span class="film-details__comment-day">${comment.dateComment}</span>
+            <span class="film-details__comment-day">${commentDate}</span>
             <button class="film-details__comment-delete" value="${comment.id}">Delete</button>
           </p>
         </div>
@@ -38,7 +43,6 @@ const createCommentsMarkup = (comments) => {
 
 const createUserRatingMarkup = (userRating) => {
   const r = [];
-  userRating = Number(userRating);
   if (userRating) {
     for (let i = 1; i < 10; i++) {
       r.push(`<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${i === userRating ? `checked` : ``}>
@@ -227,6 +231,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this._textComment = null;
     this._currentEmoji = null;
     this._currentUserRating = 0;
+    this._defaultUserRating = this._film.userRating;
     this.setCommentsMovie = this.setCommentsMovie.bind(this);
   }
 
@@ -236,6 +241,54 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
 
   _saveTextComment() {
     this._textComment = this.getElement().querySelector(`.film-details__comment-input`).value;
+  }
+
+  getTextareaComment() {
+    return this.getElement().querySelector(`.film-details__comment-input`);
+  }
+
+  getButtonDelete(idComment) {
+    return this.getElement().querySelector(`button[value = "${idComment}"]`);
+  }
+
+  setDisabledButtonDelete(idComment) {
+    this.getButtonDelete(idComment).textContent = `Deleting...`;
+    this.getButtonDelete(idComment).setAttribute(`disabled`, `disabled`);
+  }
+
+  setDefaultButtonDelete(idComment) {
+    this.getButtonDelete(idComment).textContent = `Delete`;
+    this.getButtonDelete(idComment).removeAttribute(`disabled`);
+  }
+
+  setDisabledTextareaComment() {
+    this.getTextareaComment().setAttribute(`disabled`, `disabled`);
+  }
+
+  setDefaultTextareaComment() {
+    this.getTextareaComment().removeAttribute(`disabled`);
+  }
+
+  setDisabledUserRatingInput() {
+    this.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((item) => item.setAttribute(`disabled`, `disabled`));
+  }
+
+  setRedUserRatingInput() {
+    if (this._currentUserRating) {
+      this.getElement().querySelector(`#rating-${this._currentUserRating} + .film-details__user-rating-label`).style.backgroundColor = `red`;
+    }
+  }
+
+
+  setDefaultUserRatingInput() {
+    if (this._currentUserRating) {
+      this.getElement().querySelector(`#rating-${this._currentUserRating} + .film-details__user-rating-label`).style.backgroundColor = `#d8d8d8`;
+    }
+
+    if (this._defaultUserRating) {
+      this.getElement().querySelector(`#rating-${this._defaultUserRating} + .film-details__user-rating-label`).style.backgroundColor = `#ffe800`;
+    }
+    this.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((item) => item.removeAttribute(`disabled`));
   }
 
   _onEmojiUpdate(emoji) {
@@ -269,8 +322,8 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       this.setUndoButtonListener(this._onUndoButtonClick);
     }
 
-    if (this._onCommentDeleteButtonClick) {
-      this.setCommentDeleteButtonListener(this._onCommentDeleteButtonClick);
+    if (this._onCommentDelete) {
+      this.setCommentDeleteListener(this._onCommentDelete);
     }
 
     if (this._onCommentAdd) {
@@ -337,7 +390,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
         if (evt.target.tagName !== `INPUT`) {
           return;
         }
-        const userRating = evt.target.value;
+        const userRating = Number(evt.target.value);
         if (this._currentUserRating === userRating) {
           return;
         }
@@ -366,20 +419,20 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this.setUndoButtonListener(this._onUndoButtonClick);
   }
 
-  setCommentDeleteButtonListener(onCommentDeleteButtonClick) {
+  setCommentDeleteListener(onCommentDelete) {
     this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       if (evt.target.tagName !== `BUTTON`) {
         return;
       }
       const currentIdComment = evt.target.value;
-      onCommentDeleteButtonClick(currentIdComment);
+      onCommentDelete(currentIdComment);
     });
   }
 
-  setCommentDeleteButtonClickHandler(handler) {
-    this._onCommentDeleteButtonClick = handler;
-    this.setCommentDeleteButtonListener(this._onCommentDeleteButtonClick);
+  setCommentDeleteHandler(handler) {
+    this._onCommentDelete = handler;
+    this.setCommentDeleteListener(this._onCommentDelete);
   }
 
   setCommentAddListener(onCommentAdd) {
@@ -387,7 +440,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       if (evt.key === `Enter` && evt.ctrlKey) {
         this._saveTextComment();
         if (this._textComment && this._currentEmoji) {
-          let localComment = new LocalComment(getDateComment(generateDateComment()), this._textComment, this._currentEmoji);
+          let localComment = new LocalComment(generateDateComment(), this._textComment, this._currentEmoji);
           onCommentAdd(localComment);
         }
       }
