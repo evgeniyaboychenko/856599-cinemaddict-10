@@ -1,8 +1,9 @@
 import API from './api.js';
 import ProfileUserComponent from './components/profile-user.js';
 import StatisticComponent from './components/statistic.js';
+import MessageLoadingComponent from './components/message-loading.js';
 
-import {render, RenderPosition} from './utils/render.js';
+import {render, RenderPosition, removeComponent} from './utils/render.js';
 import PageController from './controllers/page.js';
 import FilterController from './controllers/filter.js';
 import MoviesModel from './models/movies.js';
@@ -23,6 +24,8 @@ const moviesModel = new MoviesModel();
 const filterController = new FilterController(siteMainElement, moviesModel);
 const pageController = new PageController(siteMainElement, moviesModel, api);
 const statisticComponent = new StatisticComponent(moviesModel);
+const messageLoadingComponent = new MessageLoadingComponent();
+render(siteMainElement, messageLoadingComponent, RenderPosition.BEFOREEND);
 
 // показать кол-во фильмов в футере
 const showCountMovies = (movies) => {
@@ -33,6 +36,7 @@ const showCountMovies = (movies) => {
 api.getMovies()
   .then((movies) => {
     moviesModel.setMovies(movies);
+    removeComponent(messageLoadingComponent);
     showProfileUser(moviesModel);
     filterController.render();
     pageController.render();

@@ -1,7 +1,4 @@
 import {FilterType} from '../const.js';
-// import {PEOPLE_NAMES} from '../mock/comment.js';
-// import {getRandomNumber} from '../utils/utils.js';
-
 
 export const getMoviesByFilter = (movies, checkedFilter) => {
   switch (checkedFilter) {
@@ -41,6 +38,11 @@ export default class Movies {
     this._currentFilter = FilterType.ALL;
     this._handlerFilterChanged = null;
     this._handlerDataChanged = null;
+    this._isLoading = null;
+  }
+
+  isLoading() {
+    return true;
   }
 
   getMoviesAll() {
@@ -112,18 +114,4 @@ export default class Movies {
     this._comments = copyComments;
     return true;
   }
-
-  // addComment(idCard, newComment) {
-  //   newComment.id = String(new Date().valueOf() + Math.random());
-  //   newComment.autorComment = PEOPLE_NAMES[getRandomNumber(PEOPLE_NAMES.length)];
-  //   const copyMovies = this._movies.slice();
-  //   const movie = copyMovies.find((it) => it.id === idCard);
-  //   movie.comments.push(newComment.id);
-  //   this._movies = copyMovies;
-
-  //   const copyComments = new Map(this._comments);
-  //   copyComments.get(idCard).push(newComment);
-  //   this._comments = copyComments;
-  //   return true;
-  // }
 }

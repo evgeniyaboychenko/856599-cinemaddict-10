@@ -3,6 +3,7 @@ export const RenderPosition = {
   BEFOREEND: `beforeend`,
   AFTEREND: `afterend`
 };
+
 // фун-ия создания DOM узда
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
@@ -30,7 +31,6 @@ export const removeComponent = (component) => {
   component.getElement().remove();
   component.removeElement();
 };
-
 
 export const replace = (newComponent, oldComponent) => {
   const oldElement = oldComponent.getElement();
