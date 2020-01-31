@@ -4,6 +4,7 @@ import ChartDatalabels from 'chartjs-plugin-datalabels';
 import {getProfileRating} from '../utils/utils.js';
 import {FilterByDateForStatistic as FilterByDateForStatistic} from '../const.js';
 import moment from 'moment';
+const MINUTES_IN_HOUR = 60;
 
 const getWatchedMovies = (movies) => {
   return movies.filter((movie) => movie.isHistory);
@@ -137,7 +138,7 @@ const createStatisticTemplate = (moviesModel, selectedFilterDate) => {
   const profileRating = getProfileRating(countWatchedMoviesTotal);
   const countWatchedMovies = filteredMoviesByDate.length;
   const totalDuration = getTotalDuration(filteredMoviesByDate);
-  const totalDurationInHours = Math.trunc(totalDuration / 60);
+  const totalDurationInHours = Math.trunc(totalDuration / MINUTES_IN_HOUR);
   const totalDurationInMinutes = moment.duration(totalDuration, `minutes`).minutes();
   const genresWithCount = getGenresWithCount(filteredMoviesByDate);
   return (
@@ -202,6 +203,13 @@ export default class Statistic extends AbstractSmartComponent {
     return createStatisticTemplate(this._moviesModel, this._selectedFilterDate);
   }
 
+  setActiveFilter(selectedFilterDate) {
+    const item = this.getElement().querySelector(`#${selectedFilterDate}`);
+    if (item) {
+      item.checked = true;
+    }
+  }
+
   show() {
     super.show();
     this.rerender();
@@ -220,6 +228,16 @@ export default class Statistic extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
+  rerender() {
+    super.rerender();
+    this.setActiveFilter(this._selectedFilterDate);
+    if (this._genresChart) {
+      this._genresChart.destroy();
+      this._genresChart = null;
+    }
+    this._renderCharts();
+  }
+
   _onChangeFilterDate(selectedFilterDate) {
     this._selectedFilterDate = selectedFilterDate;
     this.rerender();
@@ -234,23 +252,6 @@ export default class Statistic extends AbstractSmartComponent {
       this._selectedFilterDate = evt.target.id;
       this._onChangeFilterDate(this._selectedFilterDate);
     });
-  }
-
-  rerender() {
-    super.rerender();
-    this.setActiveFilter(this._selectedFilterDate);
-    if (this._genresChart) {
-      this._genresChart.destroy();
-      this._genresChart = null;
-    }
-    this._renderCharts();
-  }
-
-  setActiveFilter(selectedFilterDate) {
-    const item = this.getElement().querySelector(`#${selectedFilterDate}`);
-    if (item) {
-      item.checked = true;
-    }
   }
 
   _renderCharts() {

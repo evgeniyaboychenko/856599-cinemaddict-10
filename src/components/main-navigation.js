@@ -1,7 +1,6 @@
 import AbstractComponent from './abstract-component.js';
 import {FilterType} from '../const.js';
 
-
 const createFilterMarkup = (filter) => {
   const {name, count} = filter;
   return name === `All movies` ? `<a href="#all" data-filter-type="${FilterType.ALL}" class="main-navigation__item main-navigation__item--active">${name}</a>` : `<a href="#${name.toLowerCase()}" data-filter-type="${name}" class="main-navigation__item">${name} <span class="main-navigation__item-count">${count}</span></a>`;
@@ -12,7 +11,7 @@ const createMainNavigationTemplate = (filters) => {
   const filterMarkup = filters.map((it) => createFilterMarkup(it)).join(`\n`);
   return (
     `<nav class="main-navigation">
-${filterMarkup}
+    ${filterMarkup}
     <a href="#stats" data-filter-type="Stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
   </nav>`
   );

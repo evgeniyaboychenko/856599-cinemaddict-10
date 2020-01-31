@@ -3,8 +3,9 @@ import FilmCardComponent from '../components/film-card.js';
 import AboutFilmPopupComponent from '../components/about-film.js';
 import {render, RenderPosition, removeComponent, replace} from '../utils/render.js';
 import moment from 'moment';
-const siteBody = document.querySelector(`body`);
 const SHAKE_ANIMATION_TIMEOUT = 600;
+const MILLISECONDS_IN_SECONDS = 1000;
+const siteBody = document.querySelector(`body`);
 
 export const OperationType = {
   DELETE_COMMENT: `delete`,
@@ -26,11 +27,6 @@ export default class MovieController {
     this._loadComments = null;
   }
 
-  destroy() {
-    removeComponent(this._filmCardComponent);
-    this.setDefaultView();
-  }
-
   setDefaultView() {
     if (this._isOpenPopup) {
       removeComponent(this._aboutFilmPopupComponent);
@@ -38,8 +34,13 @@ export default class MovieController {
     }
   }
 
+  destroy() {
+    removeComponent(this._filmCardComponent);
+    this.setDefaultView();
+  }
+
   shake(operationType, idComment) {
-    this._aboutFilmPopupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._aboutFilmPopupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS_IN_SECONDS}s`;
     if (operationType === OperationType.SET_USER_RATING) {
       this._aboutFilmPopupComponent.setBackgroundUserRatingInput();
     }
@@ -175,7 +176,6 @@ export default class MovieController {
 
         this._aboutFilmPopupComponent.setCommentsMovie(this._comments);
         this._aboutFilmPopupComponent.resetState();
-        // показать попап
         render(siteBody, this._aboutFilmPopupComponent, RenderPosition.BEFOREEND);
         this._isOpenPopup = true;
         document.addEventListener(`keydown`, onPopupEscPress);
