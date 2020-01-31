@@ -1,13 +1,13 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
-const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
 import {EmojiType} from '../const.js';
 import moment from 'moment';
 import {getDurationMovie} from '../utils/utils.js';
 import LocalComment from '../models/local-comment.js';
 
-export const generateDateComment = () => {
-  let date = moment().toDate();
-  return date;
+const EndingWordGenre = {MULTIPLE: `s`, ZERO: ``};
+const UserRating = {
+  MIN: 1,
+  MAX: 9
 };
 
 const createGenresMarkup = (genres) => {
@@ -43,16 +43,9 @@ const createCommentsMarkup = (comments) => {
 
 const createUserRatingMarkup = (userRating) => {
   const r = [];
-  if (userRating) {
-    for (let i = 1; i < 10; i++) {
-      r.push(`<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${i === userRating ? `checked` : ``}>
-      <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`);
-    }
-  } else {
-    for (let i = 1; i < 10; i++) {
-      r.push(`<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}">
-      <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`);
-    }
+  for (let i = UserRating.MIN; i <= UserRating.MAX; i++) {
+    r.push(`<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${i === userRating ? `checked` : ``}>
+    <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`);
   }
   return r.join(`\n`);
 };
@@ -223,6 +216,11 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
   );
 };
 
+export const generateDateComment = () => {
+  let date = moment().toDate();
+  return date;
+};
+
 export default class AboutFilmPopup extends AbstractSmartComponent {
   constructor(film, comments) {
     super();
@@ -235,16 +233,13 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
     this.setCommentsMovie = this.setCommentsMovie.bind(this);
   }
 
-  recoveryListeners() {
-    this._subscribeOnEvents();
-  }
-
-  _saveTextComment() {
-    this._textComment = this.getElement().querySelector(`.film-details__comment-input`).value;
-  }
-
   getTextareaComment() {
     return this.getElement().querySelector(`.film-details__comment-input`);
+  }
+
+
+  getTemplate() {
+    return createAboutFilmPopupTemplate(this._film, this._comments, this._currentEmoji, this._textComment);
   }
 
   getButtonDelete(idComment) {
@@ -288,63 +283,6 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       this.getElement().querySelector(`#rating-${this._defaultUserRating} + .film-details__user-rating-label`).style.backgroundColor = `#ffe800`;
     }
     this.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((item) => item.removeAttribute(`disabled`));
-  }
-
-  _onEmojiUpdate(emoji) {
-    this._currentEmoji = emoji;
-    this._saveTextComment();
-    this.rerender();
-  }
-
-  _subscribeOnEvents() {
-    this.addEmojiHandler();
-
-    if (this._onCloseButtonClick) {
-      this.setCloseButtonListener(this._onCloseButtonClick);
-    }
-
-    if (this._onWatchlistButtonClick) {
-      this.setWatchlistButtonListener(this._onWatchlistButtonClick);
-    }
-    if (this._onWatchedButtonClick) {
-      this.setWatchedButtonListener(this._onWatchedButtonClick);
-    }
-    if (this._onFavoriteButtonClick) {
-      this.setFavoriteButtonListener(this._onFavoriteButtonClick);
-    }
-
-    if (this._onUserRatingButtonClick) {
-      this.setUserRatingButtonListener(this._onUserRatingButtonClick);
-    }
-
-    if (this._onUndoButtonClick) {
-      this.setUndoButtonListener(this._onUndoButtonClick);
-    }
-
-    if (this._onCommentDelete) {
-      this.setCommentDeleteListener(this._onCommentDelete);
-    }
-
-    if (this._onCommentAdd) {
-      this.setCommentAddListener(this._onCommentAdd);
-    }
-  }
-
-  setCommentsMovie(comments) {
-    this._comments = comments;
-  }
-
-  getTemplate() {
-    return createAboutFilmPopupTemplate(this._film, this._comments, this._currentEmoji, this._textComment);
-  }
-
-  addEmojiHandler() {
-    this._addEmojiClickListener();
-  }
-
-  resetState() {
-    this._currentEmoji = null;
-    this._textComment = null;
   }
 
   setCloseButtonListener(onCloseButtonClick) {
@@ -449,6 +387,67 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
   setCommentAddHandler(handler) {
     this._onCommentAdd = handler;
     this.setCommentAddListener(this._onCommentAdd);
+  }
+
+  setCommentsMovie(comments) {
+    this._comments = comments;
+  }
+
+  addEmojiHandler() {
+    this._addEmojiClickListener();
+  }
+
+  resetState() {
+    this._currentEmoji = null;
+    this._textComment = null;
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
+  }
+
+  _saveTextComment() {
+    this._textComment = this.getElement().querySelector(`.film-details__comment-input`).value;
+  }
+
+  _onEmojiUpdate(emoji) {
+    this._currentEmoji = emoji;
+    this._saveTextComment();
+    this.rerender();
+  }
+
+  _subscribeOnEvents() {
+    this.addEmojiHandler();
+
+    if (this._onCloseButtonClick) {
+      this.setCloseButtonListener(this._onCloseButtonClick);
+    }
+
+    if (this._onWatchlistButtonClick) {
+      this.setWatchlistButtonListener(this._onWatchlistButtonClick);
+    }
+    if (this._onWatchedButtonClick) {
+      this.setWatchedButtonListener(this._onWatchedButtonClick);
+    }
+    if (this._onFavoriteButtonClick) {
+      this.setFavoriteButtonListener(this._onFavoriteButtonClick);
+    }
+
+    if (this._onUserRatingButtonClick) {
+      this.setUserRatingButtonListener(this._onUserRatingButtonClick);
+    }
+
+    if (this._onUndoButtonClick) {
+      this.setUndoButtonListener(this._onUndoButtonClick);
+    }
+
+    if (this._onCommentDelete) {
+      this.setCommentDeleteListener(this._onCommentDelete);
+    }
+
+    if (this._onCommentAdd) {
+      this.setCommentAddListener(this._onCommentAdd);
+    }
   }
 
   _addEmojiClickListener() {

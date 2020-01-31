@@ -18,21 +18,16 @@ export default class FilterController {
     this._container = container;
     this._moviesModel = moviesModel;
     this._activeFilterType = FilterType.ALL;
-
     this._onFilterChange = this._onFilterChange.bind(this);
-
     this._onDataChange = this._onDataChange.bind(this);
     this._moviesModel.setDataChangedHandler(this._onDataChange);
-
     this._mainNavigationComponent = null;
     this._statisticComponent = null;
-
     this._handlerMenuChanged = null;
   }
 
-  _onDataChange() {
-    this.render();
-    this._mainNavigationComponent.setCurrentFilter(this._activeFilterType);
+  setOnMenuChanged(handler) {
+    this._handlerMenuChanged = handler;
   }
 
   render() {
@@ -50,8 +45,9 @@ export default class FilterController {
     this._mainNavigationComponent.setFilterChangedHandler(this._onFilterChange);
   }
 
-  setOnMenuChanged(handler) {
-    this._handlerMenuChanged = handler;
+  _onDataChange() {
+    this.render();
+    this._mainNavigationComponent.setCurrentFilter(this._activeFilterType);
   }
 
   _onFilterChange(filterType) {

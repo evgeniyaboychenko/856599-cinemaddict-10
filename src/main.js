@@ -12,13 +12,13 @@ const AUTHORIZATION = `Basic eo0w590i629889a`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
 const api = new API(END_POINT, AUTHORIZATION);
 
+const siteMainElement = document.querySelector(`.main`);
+
 const showProfileUser = (moviesModel) => {
   const siteHeaderElement = document.querySelector(`.header`);
   const profileUserComponent = new ProfileUserComponent(moviesModel);
   render(siteHeaderElement, profileUserComponent, RenderPosition.BEFOREEND);
 };
-
-const siteMainElement = document.querySelector(`.main`);
 
 const moviesModel = new MoviesModel();
 const filterController = new FilterController(siteMainElement, moviesModel);
@@ -27,7 +27,6 @@ const statisticComponent = new StatisticComponent(moviesModel);
 const messageLoadingComponent = new MessageLoadingComponent();
 render(siteMainElement, messageLoadingComponent, RenderPosition.BEFOREEND);
 
-// показать кол-во фильмов в футере
 const showCountMovies = (movies) => {
   const siteFooterStatisticsElement = document.querySelector(`.footer__statistics`);
   siteFooterStatisticsElement.querySelector(`p`).textContent = `${movies.length} movies inside`;

@@ -1,19 +1,5 @@
 import {FilterType} from '../const.js';
 
-export const getMoviesByFilter = (movies, checkedFilter) => {
-  switch (checkedFilter) {
-    case FilterType.ALL:
-      return movies;
-    case FilterType.WATCHLIST:
-      return movies.filter((it) => (it.isWatchlist));
-    case FilterType.HISTORY:
-      return movies.filter((it) => it.isHistory);
-    case FilterType.FAVORITES:
-      return movies.filter((it) => it.isFavorites);
-  }
-  return movies;
-};
-
 const getMatchByFilter = (movie, filter) => {
   switch (filter) {
     case FilterType.WATCHLIST:
@@ -31,6 +17,20 @@ const setMovieIdToComments = (movieId, movieComments) => {
   return movieIdToCommentsMap.set(movieId, movieComments);
 };
 
+export const getMoviesByFilter = (movies, checkedFilter) => {
+  switch (checkedFilter) {
+    case FilterType.ALL:
+      return movies;
+    case FilterType.WATCHLIST:
+      return movies.filter((it) => (it.isWatchlist));
+    case FilterType.HISTORY:
+      return movies.filter((it) => it.isHistory);
+    case FilterType.FAVORITES:
+      return movies.filter((it) => it.isFavorites);
+  }
+  return movies;
+};
+
 export default class Movies {
   constructor() {
     this._movies = [];
@@ -39,10 +39,6 @@ export default class Movies {
     this._handlerFilterChanged = null;
     this._handlerDataChanged = null;
     this._isLoading = null;
-  }
-
-  isLoading() {
-    return true;
   }
 
   getMoviesAll() {
@@ -55,10 +51,6 @@ export default class Movies {
 
   getMovies() {
     return getMoviesByFilter(this._movies, this._currentFilter);
-  }
-
-  matchCurrentFilter(card) {
-    return getMatchByFilter(card, this._currentFilter);
   }
 
   setMovies(movies) {
@@ -80,6 +72,14 @@ export default class Movies {
 
   setDataChangedHandler(handler) {
     this._handlerDataChanged = handler;
+  }
+
+  isLoading() {
+    return true;
+  }
+
+  matchCurrentFilter(card) {
+    return getMatchByFilter(card, this._currentFilter);
   }
 
   updateMovie(id, movie) {

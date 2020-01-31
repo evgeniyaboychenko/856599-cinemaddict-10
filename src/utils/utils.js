@@ -1,16 +1,14 @@
 import moment from 'moment';
+
+const CountWatchedFilms = {
+  MIN: 1,
+  MIDDLE: 11,
+  MAX: 21
+};
+
 // фун-ия возвращающая случайное число [0..number)
 export const getRandomNumber = (number) => {
   return Math.floor(Math.random() * number);
-};
-// фун-ия возвращающая true или false
-export const generateFlagValue = () => {
-  return Boolean(getRandomNumber(2));
-};
-
-// фун-ия возвращающая случайное число в промежутке [min, max)
-export const getRandomRange = function (min, max) {
-  return min + getRandomNumber(max - min);
 };
 
 // функция возвращающая случайный массив до заданной длины
@@ -23,18 +21,13 @@ export const generateRandomArray = (array, number) => {
   return array;
 };
 
-export const getObjectsArray = (obj, count) => {
-  return new Array(count)
-    .fill(``).map(obj);
-};
-
 // функция возвращающая звание пользователя
 export const getProfileRating = (countWatchedFilms) => {
-  if (countWatchedFilms < 1) {
+  if (countWatchedFilms < CountWatchedFilms.MIN) {
     return ``;
-  } else if (countWatchedFilms < 11) {
+  } else if (countWatchedFilms < CountWatchedFilms.MIDDLE) {
     return `Novice`;
-  } else if (countWatchedFilms < 21) {
+  } else if (countWatchedFilms < CountWatchedFilms.MAX) {
     return `Fan`;
   } else {
     return `Movie Buff`;
