@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component.js';
 
-export const SortType = {
+const SortType = {
   DEFAULT: `Sort by default`,
   DATE: `Sort by date`,
   RATING: `Sort by rating`
@@ -9,9 +9,9 @@ export const SortType = {
 const createSortFilmTemplate = () => {
   return (
     `<ul class="sort">
-       <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">${SortType.DEFAULT}</a></li>
-       <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">${SortType.DATE}</a></li>
-       <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">${SortType.RATING}</a></li>
+       <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
+       <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">Sort by date</a></li>
+       <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">Sort by rating</a></li>
     </ul>`
   );
 };
@@ -46,6 +46,7 @@ export default class SortFilm extends AbstractComponent {
       }
 
       const sortType = evt.target.dataset.sortType;
+
       if (this._currenSortType === sortType) {
         return;
       }
@@ -62,3 +63,5 @@ export default class SortFilm extends AbstractComponent {
     });
   }
 }
+
+export {SortType};

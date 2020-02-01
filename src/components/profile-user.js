@@ -2,7 +2,7 @@ import AbstractComponent from './abstract-component.js';
 import {getProfileRating} from '../utils/utils.js';
 
 const getCounWathedMovies = (movies) => {
-  let showedMovies = movies.filter((item) => item.isHistory);
+  const showedMovies = movies.filter((item) => item.isHistory);
   return showedMovies.length;
 };
 

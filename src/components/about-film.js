@@ -21,7 +21,7 @@ const createGenresMarkup = (genres) => {
 
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
-    let commentDate = moment(comment.dateComment).format(`YYYY/MM/DD HH:mm`);
+    const commentDate = moment(comment.dateComment).format(`YYYY/MM/DD HH:mm`);
     return (
       `<li class="film-details__comment">
         <span class="film-details__comment-emoji">
@@ -217,8 +217,7 @@ const createAboutFilmPopupTemplate = (film, commentsFilm, selectedEmoji, textCom
 };
 
 export const generateDateComment = () => {
-  let date = moment().toDate();
-  return date;
+  return moment().toDate();
 };
 
 export default class AboutFilmPopup extends AbstractSmartComponent {
@@ -377,7 +376,7 @@ export default class AboutFilmPopup extends AbstractSmartComponent {
       if (evt.key === `Enter` && evt.ctrlKey) {
         this._saveTextComment();
         if (this._textComment && this._currentEmoji) {
-          let localComment = new LocalComment(generateDateComment(), this._textComment, this._currentEmoji);
+          const localComment = new LocalComment(generateDateComment(), this._textComment, this._currentEmoji);
           onCommentAdd(localComment);
         }
       }

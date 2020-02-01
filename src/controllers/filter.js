@@ -22,7 +22,6 @@ export default class FilterController {
     this._onDataChange = this._onDataChange.bind(this);
     this._moviesModel.setDataChangedHandler(this._onDataChange);
     this._mainNavigationComponent = null;
-    this._statisticComponent = null;
     this._handlerMenuChanged = null;
   }
 

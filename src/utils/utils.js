@@ -12,26 +12,27 @@ export const getRandomNumber = (number) => {
 };
 
 // функция возвращающая случайный массив до заданной длины
-export const generateRandomArray = (array, number) => {
-  array = array.slice();
-  const deleteCount = array.length - number;
+export const generateRandomItems = (items, number) => {
+  items = items.slice();
+  const deleteCount = items.length - number;
   for (let i = 0; i < deleteCount; i++) {
-    array.splice(getRandomNumber(array.length), 1);
+    items.splice(getRandomNumber(items.length), 1);
   }
-  return array;
+  return items;
 };
 
 // функция возвращающая звание пользователя
 export const getProfileRating = (countWatchedFilms) => {
   if (countWatchedFilms < CountWatchedFilms.MIN) {
     return ``;
-  } else if (countWatchedFilms < CountWatchedFilms.MIDDLE) {
-    return `Novice`;
-  } else if (countWatchedFilms < CountWatchedFilms.MAX) {
-    return `Fan`;
-  } else {
-    return `Movie Buff`;
   }
+  if (countWatchedFilms < CountWatchedFilms.MIDDLE) {
+    return `Novice`;
+  }
+  if (countWatchedFilms < CountWatchedFilms.MAX) {
+    return `Fan`;
+  }
+  return `Movie Buff`;
 };
 
 export const getDurationMovie = (time) => {

@@ -12,7 +12,7 @@ const getMatchByFilter = (movie, filter) => {
   return false;
 };
 
-let movieIdToCommentsMap = new Map();
+const movieIdToCommentsMap = new Map();
 const setMovieIdToComments = (movieId, movieComments) => {
   return movieIdToCommentsMap.set(movieId, movieComments);
 };
@@ -38,7 +38,6 @@ export default class Movies {
     this._currentFilter = FilterType.ALL;
     this._handlerFilterChanged = null;
     this._handlerDataChanged = null;
-    this._isLoading = null;
   }
 
   getMoviesAll() {
@@ -72,10 +71,6 @@ export default class Movies {
 
   setDataChangedHandler(handler) {
     this._handlerDataChanged = handler;
-  }
-
-  isLoading() {
-    return true;
   }
 
   matchCurrentFilter(card) {

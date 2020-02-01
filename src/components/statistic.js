@@ -27,12 +27,12 @@ const getGenres = (watchedMovies) => {
 };
 
 const getGenresWithCount = (watchedMovies) => {
-  let genres = getGenres(watchedMovies);
-  let genresWithCount = [];
-  genres = genres.sort();
+  const genres = getGenres(watchedMovies);
+  const genresWithCount = [];
+  genres.sort();
   let index = 0;
   while (genres.length !== 0) {
-    let topGenre = genres[0];
+    const topGenre = genres[0];
     genresWithCount.push({
       genre: topGenre,
       count: genres.filter((i) => topGenre === i).length,
@@ -261,7 +261,7 @@ export default class Statistic extends AbstractSmartComponent {
     if (!filterdMoviesByDate.length) {
       return;
     }
-    let genresWithCount = getGenresWithCount(filterdMoviesByDate);
+    const genresWithCount = getGenresWithCount(filterdMoviesByDate);
     const labelsChart = genresWithCount.map((item) => {
       return item.genre;
     });
